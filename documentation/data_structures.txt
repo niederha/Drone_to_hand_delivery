@@ -1,0 +1,106 @@
+my_database :
+{
+	users :
+	{
+		
+		*username (string):
+		{
+			is_disconnected : bool value		//nb : if false, the user might still be offline //do we need it?	
+			timestamp_last_seen : int32 value	//regularly updated with the current unix timestamp if the user is connected and has internet access
+			-GPS :
+			{
+				north : double value
+				east : double value
+				timestamp_last_GPS_update: int32 value
+			}
+		}
+	}
+
+	scan_requests :
+	{
+		* sender_username (string):
+		{
+			timestamp : int32 value		//to enable timeout of scan requests
+			- cancelled : bool		//if not present = false
+		}
+	}
+	
+	deliveries:
+	{
+		*id (string):
+		{
+			sender : string value
+			reciever : string value
+			cancelled : bool value	//true if cancelled or denied or timeout
+			status : int value 	//meaning of different constants to be defined (1 = request sent to database, 2= request received by receiver, 3= request accepted by receiver, 4= drone connected and accepted by user, 5 drone flying to receiver, 6 drone arrived near receiver (ie in receiver control), 7 drone landed at receiver, 8 drone flying back to sender
+			drone :
+			{
+				battery : float value	//percentage of charge
+				GPS :		//use senser GPS if drone is off
+				{
+					north : double value
+					east : double value
+					timestamp_last_GPS_update : int32 value
+				}
+				- command_from_receiver:
+				{
+					timestamp : int32 value
+					command : ???			//exact type of command to be determined
+				}
+			}
+			ETA : int32 value	//unix timestamp // do we need it or do we recalculate it on both sides based on drone and receiver GPS coordinates?
+			distance : double value	//unix timestamp // do we need it or do we recalculate it on both sides based on drone and receiver GPS coordinates?
+			- item : string value
+			- quantity : int value		//or float?
+			- description : string value
+			- thanks_message : string value		//only if we have time to implement them
+		}
+	}
+
+	sending_requests_by_receivers :	// do we need it? enables quicker checking of new receiving request (and uses less mobile data)
+	{
+		*receiver_username (string) :
+		{
+			(*)delivery_id : string value
+		}
+	}
+
+//if we decide to implement it:
+	finished_deliveries_by_sender :
+	{
+		*username (string)
+		{
+			*finished delivery id : string value
+		}
+	}
+	finished_deliveries_by_receiver :
+		*username (string)
+		{
+			*finished delivery id : string value
+		}
+	}
+	finished_deliveries_by_id :
+	{
+		id (string):
+		{
+			sender username : string value
+			receiver username : string value
+			date : int32 value //unix timestamp
+			status : int value 	//constants to be defined
+			- item : string value
+			- quantity : int value		//or float?
+			- description : string value
+			- thanks_message : string value		//only if we have time to implement them
+			//other infos like time of flight ?
+		}
+	}
+
+}
+
+
+
+
+
+* : multiple
+- : optionnal
+description (string) : an arbitrary string correspoding to the description and used as a key
