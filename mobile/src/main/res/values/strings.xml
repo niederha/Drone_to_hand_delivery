@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">drone_delivery</string>
+
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Log in</string>
+    <string name="register">Setup account</string>
 </resources>
