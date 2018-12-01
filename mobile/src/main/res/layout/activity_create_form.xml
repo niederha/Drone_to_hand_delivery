@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Cancel"
-            android:onClick="FormCancelButtonClicked" />
+            android:onClick="formCancelButtonClicked" />
 
         <Button
             android:id="@+id/sendButton"
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Send"
-            android:onClick="FormSendButtonClicked" />
+            android:onClick="formSendButtonClicked" />
     </LinearLayout>
 
 
