@@ -3,7 +3,6 @@ TODO : retrieve sender name (from intent extra or from local storage)   (for now
 TODO : retrieve receiver name (probably from intend extra)   (for now, hard coded in OnCreate)
 TODO : improve aesthetic (layout, ...)
  TODO : finish implementation of sending form to database
- TODO : launch new activity when clicking on "send" button
  TODO : stop the background process that checks for receiving
  TODO : send user location as "drone_GPS" to database?
  TODO: set properly ETA
@@ -11,6 +10,7 @@ TODO : improve aesthetic (layout, ...)
 **/
 package felix_loc_herman.drone_delivery;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -69,31 +69,28 @@ public class CreateFormActivity extends AppCompatActivity {
         TextView messageText = findViewById(R.id.messageText);    //get TextView
         message= messageText.getText().toString();         //extract name of item from TextView
 
-        Log.e("myApp","ready to connect to firebase");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference deliveryGetRef = database.getReference("deliveries");
         DatabaseReference deliveryRef = database.getReference(sender_username);
-        //DatabaseReference profileRef = profileGetRef.push();
-
-        Log.e("myApp","ready to write to firebase");
 
 
-        deliveryRef.runTransaction(new UploadFormContentHandler());
+        deliveryRef.runTransaction(new UploadFormContentHandler(this));
 
-        Log.e("myApp","finished to write to firebase");
-        /*Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)),
-                PICK_IMAGE);*/
+
     }
 
     private class UploadFormContentHandler implements Transaction.Handler { //This class does the actual upload and handles the launching of the next activity once finished
+
+        private final Context context;
+
+        UploadFormContentHandler(Context context) {
+            this.context = context;
+        }
+
         @NonNull
         @Override
         public Transaction.Result doTransaction(@NonNull MutableData
                                                         mutableData) {
-            Log.e("myApp","preparing data");
             //mutableData.child("sender").setValue(sender_username);    //not needed : it is already the key
             mutableData.child("reciever").setValue(receiver_username);
             mutableData.child("cancelled").setValue(false);
@@ -107,7 +104,6 @@ public class CreateFormActivity extends AppCompatActivity {
             mutableData.child("quantity").setValue(itemQuantity);
             mutableData.child("message_to_receiver").setValue(message);
 
-            Log.e("myApp","trying write");
             return Transaction.success(mutableData);
         }
 
@@ -116,6 +112,8 @@ public class CreateFormActivity extends AppCompatActivity {
                                boolean b, @Nullable DataSnapshot
                                        dataSnapshot) {
             Log.e("myApp","write sucessfull");
+            Intent intent = new Intent(context,WaitingForAcceptationByReceiverActivity.class);
+            startActivity(intent);
         }
     }
 
