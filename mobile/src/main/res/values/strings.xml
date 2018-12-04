@@ -3,6 +3,20 @@
 
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="login_failed">Login failed!</string>
+    <string name="password_repeat">Password (repeat)</string>
+    <string name="password_mismatch">Passwords do not match!</string>
     <string name="login">Log in</string>
     <string name="register">Setup account</string>
+    <string name="title_activity_loading">LoadingActivity</string>
+    <string name="user_profile_image">User profile image</string>
+    <string name="form_incomplete">Please complete the form</string>
+    <string name="selectImage">Select image</string>
+    <string name="registration_success">Registration successful</string>
+    <string name="registration_failed">Registration failed!</string>
+    <string name="missing_picture">Profile picture missing!</string>
+    <string name="photo_upload_failed">Photo upload failed!</string>
+
+    <string name="action_validate_text">Save profile</string>
+    <string name="action_clear_text">Clear profile</string>
 </resources>

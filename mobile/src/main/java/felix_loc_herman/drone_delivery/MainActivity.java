@@ -9,6 +9,9 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
 
+    public static final String USER_PROFILE = "USER_PROFILE";
+    public static final String USER_ID = "USER_ID";
+
     //TODO: Fragment declarations will be set here
 
     @Override

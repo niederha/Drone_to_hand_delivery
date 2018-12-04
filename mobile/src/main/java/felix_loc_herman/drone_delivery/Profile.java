@@ -17,8 +17,12 @@ public class Profile implements Serializable {
     }
 
     Profile(String username, String password) {
+        this(username, password, null);
+    }
+    Profile(String username, String password, String photoPath) {
         this.username = username;
         this.password = password;
+        this.photoPath = photoPath;
     }
 
 }
