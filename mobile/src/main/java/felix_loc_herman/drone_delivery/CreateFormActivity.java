@@ -1,8 +1,7 @@
 /**
-TODO : retrieve sender name (from intent extra or from local storage)   (for now, hard coded in OnCreate)
-TODO : retrieve receiver name (probably from intend extra)   (for now, hard coded in OnCreate)
-TODO : improve aesthetic (layout, ...)
- TODO : finish implementation of sending form to database
+ TODO : retrieve sender name (from intent extra or from local storage)   (for now, hard coded in OnCreate)
+ TODO : retrieve receiver name (probably from intend extra)   (for now, hard coded in OnCreate)
+ TODO : improve aesthetic (layout, ...)
  TODO : stop the background process that checks for receiving
  TODO : send user location as "drone_GPS" to database?
  TODO: set properly ETA
@@ -71,7 +70,7 @@ public class CreateFormActivity extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference deliveryGetRef = database.getReference("deliveries");
-        DatabaseReference deliveryRef = database.getReference(sender_username);
+        DatabaseReference deliveryRef = deliveryGetRef.child(sender_username);
 
 
         deliveryRef.runTransaction(new UploadFormContentHandler(this));
@@ -111,7 +110,6 @@ public class CreateFormActivity extends AppCompatActivity {
         public void onComplete(@Nullable DatabaseError databaseError,
                                boolean b, @Nullable DataSnapshot
                                        dataSnapshot) {
-            Log.e("myApp","write sucessfull");
             Intent intent = new Intent(context,WaitingForAcceptationByReceiverActivity.class);
             startActivity(intent);
         }
