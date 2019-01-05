@@ -40,7 +40,7 @@ public class LoadingActivity extends AppCompatActivity {
 
         Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
         // TODO: Fix when main fragments are implemented
-        //intent.putExtra(MainReceiverFragment.USER_ID, userID);
+        intent.putExtra(MainReceiverFragment.USER_ID, userID);
         startActivity(intent);
 
         //endregion
