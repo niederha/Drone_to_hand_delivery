@@ -25,12 +25,54 @@ import static android.support.constraint.Constraints.TAG;
 
 public class DroneHandler {
 
-    private ARDiscoveryService mArdiscoveryService;
-    private ServiceConnection mArdiscoveryServiceConnection; // Connection to the drone
-
     public DroneHandler(){
         ARSDK.loadSDKLibs();
     }
+
+    // Get the device list to use
+    public var getDeviceList(){
+        var mock = 0;
+        return mock;
+    }
+
+    // Connects the object to the drone
+    public boolean connectToDrone(var device){
+        return true;
+    }
+
+    public void takeOff (){
+
+    }
+
+    public void goTo( var goal){
+
+    }
+
+    public void land(){
+
+    }
+
+    public void getBack(){
+
+    }
+
+    public var getFlightStatus(){
+        var flightStatus = 0;
+        return flightStatus();
+    }
+
+    // Return the current ETA
+    public double getETAmin(){
+        return 1;
+    }
+
+    // Returns the ETA between two points
+    static public double computeETAmin(var startPosition, var endPosition){
+        return 1;
+    }
+
+    private ARDiscoveryService mArdiscoveryService;
+    private ServiceConnection mArdiscoveryServiceConnection; // Connection to the drone
 
     private final ARDiscoveryServicesDevicesListUpdatedReceiverDelegate mDiscoveryDelegate =
             new ARDiscoveryServicesDevicesListUpdatedReceiverDelegate() {
@@ -131,5 +173,8 @@ public class DroneHandler {
             }).start();
         }
     }
+
+
+
 
 }
