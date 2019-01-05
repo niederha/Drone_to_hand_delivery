@@ -131,6 +131,7 @@ public class EditProfileActivity extends AppCompatActivity {
             case R.id.action_validate:
                 if (validateForm()) {
                     addProfileToFirebase();
+                    // Intent for starting mainActivity @ ProfileDataUploader -> onComplete
                 }
                 break;
         }

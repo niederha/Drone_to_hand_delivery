@@ -20,6 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleInstance"></activity>
         <activity android:name=".LoginActivity"/>
         <activity android:name=".EditProfileActivity"/>
 

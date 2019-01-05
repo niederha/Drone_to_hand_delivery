@@ -5,38 +5,46 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        MainReceiverFragment.OnFragmentInteractionListener,
+        MainSenderFragment.OnFragmentInteractionListener {
 
     private final String TAG = this.getClass().getSimpleName();
 
     public static final String USER_PROFILE = "USER_PROFILE";
     public static final String USER_ID = "USER_ID";
 
-    //TODO: Fragment declarations will be set here
+    private SectionsStatePagerAdapter sectionsStatePagerAdapter;
+    private MainReceiverFragment mainReceiverFragment;
+    private MainSenderFragment mainSenderFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        //TODO: Create section state pager adapter
+        sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
 
-        //TODO: instantiate fragments
+        mainReceiverFragment = new MainReceiverFragment();
+        mainSenderFragment = new MainSenderFragment();
 
-        //TODO: Create viewPager and set default tab
+        ViewPager viewPager = findViewById(R.id.mainViewPager);
+        setUpViewPager(viewPager);
 
-
+        // set default tab
+        viewPager.setCurrentItem(sectionsStatePagerAdapter.getPositionByTitle(getString(R.string.tab_title_receiver)));
     }
 
-    private void setUpViewPager(ViewPager mViewPager){
-        //TODO: Add fragments to sectionStatePagerAdapter
+    private void setUpViewPager(ViewPager viewPager) {
+        sectionsStatePagerAdapter.addFragment(mainReceiverFragment, getString(R.string.tab_title_receiver));
+        sectionsStatePagerAdapter.addFragment(mainSenderFragment, getString(R.string.tab_title_sender));
+        viewPager.setAdapter(sectionsStatePagerAdapter);
     }
 
-    //TODO: Is this override really necessary?
-    /*@Override
-    public void onFragmentInteraction(Uri uri){
-        // No operation
-    }*/ // Commented, override does not exist in inherited superclass yet
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+    }
 
 }
 

@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">drone_delivery</string>
 
+    <string name="tab_title_receiver">Receive</string>
+    <string name="tab_title_sender">Send</string>
+
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login_failed">Login failed!</string>
@@ -19,4 +22,9 @@
 
     <string name="action_validate_text">Save profile</string>
     <string name="action_clear_text">Clear profile</string>
+
+    <string name="main_receiving_msg">Waiting for senders</string>
+    <string name="main_online_status">Online status</string>
+    <string name="eta">ETA</string>
+    <string name="status">Status</string>
 </resources>
