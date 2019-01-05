@@ -58,7 +58,7 @@ public class DroneHandler {
 
     public var getFlightStatus(){
         var flightStatus = 0;
-        return flightStatus();
+        return flightStatus;
     }
 
     // Return the current ETA
