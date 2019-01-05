@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final TextView loginMessageTextView = findViewById(R.id.LoginMessage);
         final String usernameInput = ((EditText) findViewById(R.id.username)).getText().toString();
-        final String passwordInput = ((EditText) findViewById(R.id.password)).getText().toString();
+        final String passwordInput = Profile.md5(((EditText) findViewById(R.id.password)).getText().toString());
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                 TextView usernameTextView = findViewById(R.id.username);
                 TextView passwordTextView = findViewById(R.id.password);
                 usernameTextView.setText(userProfile.username);
-                passwordTextView.setText(userProfile.password);
+                passwordTextView.setText(userProfile.getHashedPassword());
             }
         }
     }

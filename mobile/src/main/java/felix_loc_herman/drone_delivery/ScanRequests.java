@@ -14,4 +14,10 @@ public class ScanRequests implements Serializable {
         this.timestamp = (int)System.currentTimeMillis();
     }
 
+    private class GPS {
+        Double north;
+        Double east;
+        String time_last_update;
+    }
+
 }

@@ -90,7 +90,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 password = intent.getExtras().getString(TYPED_PASSWORD);
                 //region "Display" password
                 TextView passwordTextView = findViewById(R.id.editPassword);
-                passwordTextView.setText(username);
+                passwordTextView.setText(password);
                 //endregion
             }
         }
@@ -212,6 +212,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         if (usernameTextView.getText().toString().isEmpty()
                 | passwordTextView.getText().toString().isEmpty()
+                | passwordRepeatTextView.getText().toString().isEmpty()
                 | (imageFile == null)) {
             Toast.makeText(this, R.string.form_incomplete, Toast.LENGTH_SHORT).show();
             return false;
@@ -328,7 +329,7 @@ public class EditProfileActivity extends AppCompatActivity {
         @Override
         public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
             mutableData.child(DB_USERNAME).setValue(userProfile.username);
-            mutableData.child(DB_PASSWORD).setValue(userProfile.password);
+            mutableData.child(DB_PASSWORD).setValue(userProfile.getHashedPassword());
             mutableData.child(DB_PHOTOPATH).setValue(userProfile.photoPath);
             return Transaction.success(mutableData);
         }
