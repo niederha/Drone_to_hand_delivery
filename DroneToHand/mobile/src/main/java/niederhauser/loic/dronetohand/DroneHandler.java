@@ -24,9 +24,11 @@ import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
 
-public class DroneHandler {
+public class DroneHandler implements ARDiscoveryServicesDevicesListUpdatedReceiverDelegate{
+
     private ARDiscoveryServicesDevicesListUpdatedReceiver receiver;
     private Context context;
+
     public DroneHandler(Context context){
         ARSDK.loadSDKLibs();
         this.context = context;
@@ -76,8 +78,8 @@ public class DroneHandler {
     }
     //endregion
 
-    private ARDiscoveryService mArdiscoveryService;
-    private ServiceConnection mArdiscoveryServiceConnection; // Connection to the drone
+    private ARDiscoveryService mArdiscoveryService = null;
+    private ServiceConnection mArdiscoveryServiceConnection = null; // Connection to the drone
 
     private final ARDiscoveryServicesDevicesListUpdatedReceiverDelegate mDiscoveryDelegate =
             new ARDiscoveryServicesDevicesListUpdatedReceiverDelegate() {
@@ -87,9 +89,11 @@ public class DroneHandler {
                     if (mArdiscoveryService != null) {
                         // List containing all drones
                         List<ARDiscoveryDeviceService> deviceList = mArdiscoveryService.getDeviceServicesArray();
+                        // TODO: something with the list
                     }
                 }
             };
+
     // Starting the drone discovery
     private void initDiscoveryService()
     {
@@ -100,7 +104,6 @@ public class DroneHandler {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     mArdiscoveryService = ((ARDiscoveryService.LocalBinder) service).getService();
-
                     startDiscovery();
                 }
 
@@ -135,11 +138,22 @@ public class DroneHandler {
 
     private void registerReceivers()
     {
-        ARDiscoveryServicesDevicesListUpdatedReceiver receiver =
-                new ARDiscoveryServicesDevicesListUpdatedReceiver(mDiscoveryDelegate);
+         receiver = new ARDiscoveryServicesDevicesListUpdatedReceiver(mDiscoveryDelegate);
         LocalBroadcastManager localBroadcastMgr = LocalBroadcastManager.getInstance(context);
         localBroadcastMgr.registerReceiver(receiver,
                 new IntentFilter(ARDiscoveryService.kARDiscoveryServiceNotificationServicesDevicesListUpdated));
+    }
+
+    @Override
+    public void onServicesDevicesListUpdated()
+    {
+        Log.d(TAG, "onServicesDevicesListUpdated ...");
+
+        if (mArdiscoveryService != null)
+        {
+            List<ARDiscoveryDeviceService> deviceList = mArdiscoveryService.getDeviceServicesArray();
+            //TODO: Do what you want with the device list
+        }
     }
 
     private ARDiscoveryDevice createDiscoveryDevice(@NonNull ARDiscoveryDeviceService service) {
