@@ -9,6 +9,7 @@ import com.parrot.arsdk.ardiscovery.receivers.ARDiscoveryServicesDevicesListUpda
 import com.parrot.arsdk.ardiscovery.receivers.ARDiscoveryServicesDevicesListUpdatedReceiverDelegate;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
@@ -24,19 +25,22 @@ import java.util.List;
 import static android.support.constraint.Constraints.TAG;
 
 public class DroneHandler {
-
-    public DroneHandler(){
+    private ARDiscoveryServicesDevicesListUpdatedReceiver receiver;
+    private Context context;
+    public DroneHandler(Context context){
         ARSDK.loadSDKLibs();
+        this.context = context;
     }
 
+    //region PublicFunctions
     // Get the device list to use
-    public var getDeviceList(){
-        var mock = 0;
+    public int getDeviceList(){
+        int mock = 0;
         return mock;
     }
 
     // Connects the object to the drone
-    public boolean connectToDrone(var device){
+    public boolean connectToDrone(int device){
         return true;
     }
 
@@ -44,7 +48,7 @@ public class DroneHandler {
 
     }
 
-    public void goTo( var goal){
+    public void goTo( int goal){
 
     }
 
@@ -56,8 +60,8 @@ public class DroneHandler {
 
     }
 
-    public var getFlightStatus(){
-        var flightStatus = 0;
+    public int getFlightStatus(){
+        int flightStatus = 0;
         return flightStatus;
     }
 
@@ -67,9 +71,10 @@ public class DroneHandler {
     }
 
     // Returns the ETA between two points
-    static public double computeETAmin(var startPosition, var endPosition){
+    static public double computeETAmin(int startPosition, int endPosition){
         return 1;
     }
+    //endregion
 
     private ARDiscoveryService mArdiscoveryService;
     private ServiceConnection mArdiscoveryServiceConnection; // Connection to the drone
@@ -110,8 +115,8 @@ public class DroneHandler {
         if (mArdiscoveryService == null)
         {
             // if the discovery service doesn't exists, bind to it
-            Intent i = new Intent(mArdiscoveryService.getApplicationContext(), ARDiscoveryService.class);
-            mArdiscoveryService.getApplicationContext().bindService(i, mArdiscoveryServiceConnection, Context.BIND_AUTO_CREATE);
+            Intent i = new Intent(context, ARDiscoveryService.class);
+            context.bindService(i, mArdiscoveryServiceConnection, Context.BIND_AUTO_CREATE);
         }
         else
         {
@@ -132,7 +137,7 @@ public class DroneHandler {
     {
         ARDiscoveryServicesDevicesListUpdatedReceiver receiver =
                 new ARDiscoveryServicesDevicesListUpdatedReceiver(mDiscoveryDelegate);
-        LocalBroadcastManager localBroadcastMgr = LocalBroadcastManager.getInstance(mArdiscoveryService.getApplicationContext());
+        LocalBroadcastManager localBroadcastMgr = LocalBroadcastManager.getInstance(context);
         localBroadcastMgr.registerReceiver(receiver,
                 new IntentFilter(ARDiscoveryService.kARDiscoveryServiceNotificationServicesDevicesListUpdated));
     }
@@ -140,7 +145,7 @@ public class DroneHandler {
     private ARDiscoveryDevice createDiscoveryDevice(@NonNull ARDiscoveryDeviceService service) {
         ARDiscoveryDevice device = null;
         try {
-            device = new ARDiscoveryDevice(mContext, service);
+            device = new ARDiscoveryDevice(context, service);
         } catch (ARDiscoveryException e) {
             Log.e(TAG, "Exception", e);
         }
@@ -150,9 +155,8 @@ public class DroneHandler {
 
     private void unregisterReceivers()
     {
-        LocalBroadcastManager localBroadcastMgr = LocalBroadcastManager.getInstance(mArdiscoveryService.getApplicationContext());
-
-        localBroadcastMgr.unregisterReceiver(mArdiscoveryServicesDevicesListUpdatedReceiver);
+        LocalBroadcastManager localBroadcastMgr = LocalBroadcastManager.getInstance(context);
+        localBroadcastMgr.unregisterReceiver(receiver);
     }
 
     private void closeServices()
@@ -167,7 +171,7 @@ public class DroneHandler {
                 {
                     mArdiscoveryService.stop();
 
-                    getApplicationContext().unbindService(mArdiscoveryServiceConnection);
+                    context.unbindService(mArdiscoveryServiceConnection);
                     mArdiscoveryService = null;
                 }
             }).start();
