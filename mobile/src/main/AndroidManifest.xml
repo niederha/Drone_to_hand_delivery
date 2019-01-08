@@ -21,16 +21,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".CreateFormActivity"/>
+        <activity android:name=".CreateFormActivity" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleInstance">
-	</activity>
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".EditProfileActivity"/>
-        <activity android:name=".WaitingForAcceptationByReceiverActivity"></activity>
+            android:launchMode="singleInstance"></activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".WaitingForAcceptationByReceiverActivity" />
+        <activity android:name=".TodoActivity"></activity>
     </application>
 
 </manifest>

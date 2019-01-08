@@ -1,6 +1,5 @@
 package felix_loc_herman.drone_delivery;
 /**
- * TODO : get sender and receiver names (intent extras or local storage)
  * TODO : add notifications (enterring status 2 and 3 and cancelled by receiver)?
  * TODO : denied : delete from database
  * TODO : denied : propose to retry? (in POPUP)
@@ -44,9 +43,9 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO : retrieve user and sender name form local storage or intent
-        sender_username="fake_sender_username";
-        receiver_username="fake_receiver_username";
+        Bundle b=getIntent().getExtras();
+        sender_username=b.getString("username");
+        receiver_username=b.getString("receiver_username");
 
         status=REQUEST_SENT_TO_DATABASE;
 
@@ -95,7 +94,7 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
             }
             else if(status==REQUEST_ACCEPTED_BY_RECEIVER) { //the receiver accepted the delivery
                 Toast.makeText(context,"The receiver accepted the delivery",Toast.LENGTH_LONG);
-                Intent intent = new Intent(context,MainActivity.class);     //TODO : change redirecting activity (and put extras if needed)
+                Intent intent = new Intent(context,TodoActivity.class);     //TODO : change redirecting activity (and put extras if needed)
                 startActivity(intent);
             }
         }

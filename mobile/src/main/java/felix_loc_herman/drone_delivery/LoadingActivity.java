@@ -55,6 +55,15 @@ public class LoadingActivity extends AppCompatActivity {
 
     }
 
+    public void     toCreteFormActivityClicked (View view){
+        Log.v(TAG, "To CreateForm Activity button clicked");
+
+        Intent intent = new Intent(LoadingActivity.this, CreateFormActivity.class);
+        intent.putExtra("username","fake_sender_username");
+        intent.putExtra("receiver_username","fake_receiver_username");
+        LoadingActivity.this.startActivity(intent);
+
+    }
 
     //endregion
 

@@ -41,9 +41,10 @@ public class CreateFormActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO : retrieve user and sender name form local storage or intent
-        sender_username="fake_sender_username";
-        receiver_username="fake_receiver_username";
+
+        Bundle b=getIntent().getExtras();
+        sender_username=b.getString("username");
+        receiver_username=b.getString("receiver_username");
 
         setContentView(R.layout.activity_create_form);  //display the layout
     }
@@ -111,6 +112,8 @@ public class CreateFormActivity extends AppCompatActivity {
                                boolean b, @Nullable DataSnapshot
                                        dataSnapshot) {
             Intent intent = new Intent(context,WaitingForAcceptationByReceiverActivity.class);
+            intent.putExtra("username",sender_username);
+            intent.putExtra("receiver_username",receiver_username);
             startActivity(intent);
         }
     }
