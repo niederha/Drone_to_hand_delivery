@@ -25,11 +25,12 @@
         <activity android:name=".CreateFormActivity" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleInstance"></activity>
+            android:launchMode="singleInstance" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".WaitingForAcceptationByReceiverActivity" />
-        <activity android:name=".TodoActivity"></activity>
+        <activity android:name=".TodoActivity" />
+        <activity android:name=".TakeOffActivity"></activity>
     </application>
 
 </manifest>
