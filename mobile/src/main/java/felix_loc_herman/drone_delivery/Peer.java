@@ -8,13 +8,15 @@ public class Peer implements Serializable {
     String photoPath;
     Integer timestamp; // TODO: Decide unit
     boolean isReceiver;
+    String senderName;
     GPS gps;
 
     Peer(String username, String photoPath) {
         this.username    = username;
         this.photoPath   = photoPath;
-        this.isReceiver  = true;
         this.timestamp   = (int) System.currentTimeMillis();
+        this.isReceiver  = true;
+        this.senderName  = "A_SENDER_HAS_NO_NAME";
         this.gps = new GPS(this.timestamp);
     }
 

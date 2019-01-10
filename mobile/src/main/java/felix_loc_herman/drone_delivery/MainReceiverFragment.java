@@ -46,6 +46,7 @@ public class MainReceiverFragment extends Fragment {
     private static final String DB_TIMESTAMP = "timestamp";
     private static final String DB_ISRECEIVER = "isReceiver";
     private static final String DB_GPS = "gps";
+    private static final String DB_SENDERNAME = "sendername";
     //endregion
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -151,7 +152,7 @@ public class MainReceiverFragment extends Fragment {
                 mutableData.child(DB_GPS).child("north").setValue(peer.gps.north);
                 mutableData.child(DB_GPS).child("east").setValue(peer.gps.east);
                 mutableData.child(DB_GPS).child("time_last_update").setValue(peer.gps.time_last_update);
-
+                mutableData.child(DB_SENDERNAME).setValue(peer.senderName);
                 return Transaction.success(mutableData);
             }
 
@@ -161,7 +162,28 @@ public class MainReceiverFragment extends Fragment {
                 ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
                 Drawable d = getResources().getDrawable(android.R.drawable.presence_online);
                 statusLED.setImageDrawable(d);
-                initialized = true;
+                startListener();
+            }
+        });
+    }
+
+    private void startListener(){
+        peerRef.child(DB_SENDERNAME).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!initialized) {
+                    initialized = true;
+                } else {
+                    //TODO: activity launch goes here!
+                    String sendername = dataSnapshot.getValue(String.class);
+                    TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
+                    textView.setText(sendername + " connected!");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
