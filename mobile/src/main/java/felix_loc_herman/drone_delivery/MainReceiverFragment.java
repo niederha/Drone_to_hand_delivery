@@ -65,12 +65,28 @@ public class MainReceiverFragment extends Fragment {
                 container, false);
 
         Intent intent = getActivity().getIntent();
-        //userID = intent.getExtras().getString(USER_ID);
-        //getUserProfileFromDB();
-        //TODO: temp
-        userProfile = (Profile) intent.getSerializableExtra(USER_PROFILE);
-        TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-        textView.setText(userProfile.username);
+        if (intent.hasExtra(MainActivity.USER_ID)){
+            userID = intent.getExtras().getString(USER_ID);
+            getUserProfileFromDB();
+
+            // Set online LED to offline
+            ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
+            Drawable d = getResources().getDrawable(android.R.drawable.presence_away);
+            statusLED.setImageDrawable(d);
+        } else {
+            userProfile = (Profile) intent.getSerializableExtra(USER_PROFILE);
+            TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
+            textView.setText(userProfile.username);
+
+            // Set online LED to online
+            ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
+            Drawable d = getResources().getDrawable(android.R.drawable.presence_online);
+            statusLED.setImageDrawable(d);
+        }
+
+        //while (userProfile == null); // wait for download
+
+
 
         //TODO: create and upload userprofile to peerlist
         //TODO: enable eventlistener and logic involved
@@ -112,13 +128,21 @@ public class MainReceiverFragment extends Fragment {
                 String db_photopath = dataSnapshot.child(DB_PHOTOPATH).getValue(String.class);
 
                 userProfile = new Profile(db_username, db_password, db_photopath);
+
+                TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
+                textView.setText(userProfile.username);
+
+                // Set online LED to online
+                ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
+                Drawable d = getResources().getDrawable(android.R.drawable.presence_online);
+                statusLED.setImageDrawable(d);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Set online LED to offline
                 ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
-                Drawable d = getResources().getDrawable(android.R.drawable.presence_offline);
+                Drawable d = getResources().getDrawable(android.R.drawable.presence_busy);
                 statusLED.setImageDrawable(d);
             }
         });
