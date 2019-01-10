@@ -73,7 +73,8 @@ public class LoginActivity extends AppCompatActivity {
                     loginMessageTextView.setTextColor(Color.RED);
                 } else {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra(MainActivity.USER_ID, userID);
+                    //intent.putExtra(MainActivity.USER_ID, userID);
+                    intent.putExtra(MainActivity.USER_PROFILE, userProfile);
                     startActivity(intent);
                 }
             }
