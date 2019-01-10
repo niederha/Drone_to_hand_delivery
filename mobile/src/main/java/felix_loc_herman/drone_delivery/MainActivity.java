@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements
     private Profile userProfile = null;
     private String userID;
 
+    public static Peer peer;
+
     private SectionsStatePagerAdapter sectionsStatePagerAdapter;
     private MainReceiverFragment mainReceiverFragment;
     private MainSenderFragment mainSenderFragment;
