@@ -6,7 +6,7 @@ public class Peer implements Serializable {
 
     String username;
     Integer timestamp; // TODO: Decide unit
-    boolean isReceiver;
+    boolean isReceiver; // is this working?
 
     public class GPS {
         Double north;
