@@ -80,8 +80,10 @@ public class TakeOffActivity extends AppCompatActivity {
 
         //TODO : set destination?
 
-        //TODO : change next activity and add intents
-        Intent intent = new Intent(this,TodoActivity.class);
+        Intent intent = new Intent(this,MapActivity.class);//TODO : change the target activity
+        intent.putExtra("username",sender_username);
+        intent.putExtra("receiver_username",receiver_username);
+        //intent.putExtra("droneHandler",droneHandler); //TODO : uncomment once the drone handler is serializable
         startActivity(intent);
     }
 

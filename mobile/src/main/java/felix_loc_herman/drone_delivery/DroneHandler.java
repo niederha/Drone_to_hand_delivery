@@ -20,11 +20,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class DroneHandler implements ARDiscoveryServicesDevicesListUpdatedReceiverDelegate{
+public class DroneHandler implements ARDiscoveryServicesDevicesListUpdatedReceiverDelegate {
 
     private ARDiscoveryServicesDevicesListUpdatedReceiver receiver;
     private Context context;
