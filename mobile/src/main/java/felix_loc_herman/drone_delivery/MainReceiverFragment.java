@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -64,8 +65,12 @@ public class MainReceiverFragment extends Fragment {
                 container, false);
 
         Intent intent = getActivity().getIntent();
-        userID = intent.getExtras().getString(USER_ID);
+        //userID = intent.getExtras().getString(USER_ID);
         //getUserProfileFromDB();
+        //TODO: temp
+        userProfile = (Profile) intent.getSerializableExtra(USER_PROFILE);
+        TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
+        textView.setText(userProfile.username);
 
         //TODO: create and upload userprofile to peerlist
         //TODO: enable eventlistener and logic involved
