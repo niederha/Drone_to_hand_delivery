@@ -340,9 +340,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 Toast.makeText(EditProfileActivity.this, R.string.registration_success, Toast.LENGTH_SHORT).show();
 
                 // Finish account creation
-                Intent intent = new Intent(EditProfileActivity.this, LoginActivity.class);
+//
+                Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+                //intent.putExtra(MainActivity.USER_ID, userID);
                 intent.putExtra(MainActivity.USER_PROFILE, userProfile);
-                setResult(AppCompatActivity.RESULT_OK, intent);
+                startActivity(intent);
                 finish();
             } else {
                 Toast.makeText(EditProfileActivity.this, R.string.registration_failed, Toast.LENGTH_SHORT).show();
