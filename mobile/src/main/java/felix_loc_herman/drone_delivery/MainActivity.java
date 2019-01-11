@@ -27,15 +27,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        //region Get user info from intent
-//        Intent intent = getIntent();
-//        if (intent.hasExtra(USER_PROFILE)) {
-//            userProfile = (Profile) intent.getExtras().get(USER_PROFILE);
-//        }
-//        if (intent.hasExtra(USER_ID)) {
-//            userID = intent.getExtras().getString(USER_ID);
-//        }
-//        //endregion
+        receiver = new Receiver();
 
         //region Fragment initializations
         setContentView(R.layout.activity_main);
@@ -51,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements
         // set default tab
         viewPager.setCurrentItem(sectionsStatePagerAdapter.getPositionByTitle(getString(R.string.tab_title_receiver)));
 
-        //setupOnPageChangeListener(viewPager);
         //endregion
 
     }
@@ -61,25 +52,7 @@ public class MainActivity extends AppCompatActivity implements
         sectionsStatePagerAdapter.addFragment(mainSenderFragment, getString(R.string.tab_title_sender));
         viewPager.setAdapter(sectionsStatePagerAdapter);
     }
-//
-//    private void setupOnPageChangeListener(ViewPager viewPager) {
-//        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-//
-//            // This method will be invoked when a new page becomes selected.
-//            @Override
-//            public void onPageSelected(int position) {
-//                switch (position){
-//                    case 0:
-//                        break;
-//                    case 1:
-//                        MainReceiverFragment.disconnectPeer();
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        });
-//    }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {

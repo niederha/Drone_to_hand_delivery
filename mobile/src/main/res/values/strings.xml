@@ -28,4 +28,6 @@
     <string name="eta">ETA</string>
     <string name="status">Status</string>
     <string name="connect">Connect</string>
+    <string name="rec_ready">Ready</string>
+    <string name="rec_busy">Busy</string>
 </resources>

@@ -39,8 +39,10 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     private static final String DB_PROFILES = "profiles";
     private static final String DB_RECEIVER = "receiver";
     private static final String DB_TIMESTAMP = "timestamp";
-    private static final String DB_ISRECEIVER = "isReceiver";
     private static final String DB_GPS = "gps";
+    private static final String DB_NORTH = "north";
+    private static final String DB_EAST = "east";
+    private static final String DB_GPSTIME = "gpstime";
     private static final String DB_SENDERNAME = "sendername";
     //endregion
 
@@ -162,10 +164,9 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 mutableData.child(DB_USERNAME).setValue(receiver.username);
                 mutableData.child(DB_PHOTOPATH).setValue(receiver.photoPath);
                 mutableData.child(DB_TIMESTAMP).setValue(receiver.timestamp);
-                mutableData.child(DB_ISRECEIVER).setValue(receiver.isReceiver);
-                mutableData.child(DB_GPS).child("north").setValue(receiver.gps.north);
-                mutableData.child(DB_GPS).child("east").setValue(receiver.gps.east);
-                mutableData.child(DB_GPS).child("time_last_update").setValue(receiver.gps.time_last_update);
+                mutableData.child(DB_GPS).child(DB_NORTH).setValue(receiver.gps.north);
+                mutableData.child(DB_GPS).child(DB_EAST).setValue(receiver.gps.east);
+                mutableData.child(DB_GPS).child(DB_GPSTIME).setValue(receiver.gps.time_last_update);
                 mutableData.child(DB_SENDERNAME).setValue(receiver.senderName);
                 return Transaction.success(mutableData);
             }
