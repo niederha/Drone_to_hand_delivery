@@ -2,21 +2,18 @@ package felix_loc_herman.drone_delivery;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.res.ResourcesCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-public class MainReceiverFragment extends Fragment {
+public class MainReceiverFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
     public static final String USER_PROFILE = "USER_PROFILE";
     public static final String USER_ID = "USER_ID";
@@ -42,7 +37,7 @@ public class MainReceiverFragment extends Fragment {
     private static final String DB_IMAGEURI = "ImageUri";
     private static final String DB_PHOTOS = "photos";
     private static final String DB_PROFILES = "profiles";
-    private static final String DB_PEERS = "peers";
+    private static final String DB_RECEIVER = "receiver";
     private static final String DB_TIMESTAMP = "timestamp";
     private static final String DB_ISRECEIVER = "isReceiver";
     private static final String DB_GPS = "gps";
@@ -50,7 +45,7 @@ public class MainReceiverFragment extends Fragment {
     //endregion
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    final DatabaseReference peerGetRef = database.getReference(DB_PEERS);
+    final DatabaseReference peerGetRef = database.getReference(DB_RECEIVER);
     final DatabaseReference peerRef = peerGetRef.push();
 
     private final String TAG = this.getClass().getSimpleName();
@@ -59,7 +54,9 @@ public class MainReceiverFragment extends Fragment {
     private Profile userProfile;
     private View fragmentView;
     private String userID;
-    private boolean initialized = false;
+    private boolean isInitialized = false;
+    private boolean isOnline = false;
+    public Switch connectedSwitch = null;
 
     public MainReceiverFragment() {}
 
@@ -67,7 +64,6 @@ public class MainReceiverFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO:
         //setHasOptionsMenu(true);
     }
 
@@ -90,12 +86,30 @@ public class MainReceiverFragment extends Fragment {
             TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
             textView.setText(userProfile.username);
 
-            initPeerToPeerList();
+            isInitialized = true;
         }
 
-        //TODO: enable eventlistener and logic involved
+        connectedSwitch = fragmentView.findViewById(R.id.connectSwitch);
+        connectedSwitch.setOnCheckedChangeListener(this);
 
         return fragmentView;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isInitialized){
+            if (isChecked) {
+                initPeerToPeerList();
+            } else {
+                disconnectPeer();
+                ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
+                Drawable d = getResources().getDrawable(android.R.drawable.presence_invisible);
+                statusLED.setImageDrawable(d);
+            }
+        } else {
+            Toast.makeText(getContext(),"Not ready", Toast.LENGTH_SHORT).show();
+            connectedSwitch.setChecked(false);
+        }
     }
 
     private void getUserProfileFromDB() {
@@ -113,7 +127,7 @@ public class MainReceiverFragment extends Fragment {
                 TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
                 textView.setText(userProfile.username);
 
-                initPeerToPeerList();
+                isInitialized = true;
             }
 
             @Override
@@ -127,14 +141,14 @@ public class MainReceiverFragment extends Fragment {
     }
 
     private void initPeerToPeerList(){
-        MainActivity.peer = new Peer(userProfile.username, userProfile.photoPath);
+        MainActivity.receiver = new Receiver(userProfile.username, userProfile.photoPath);
         //TODO: get GPS and update it
-        //MainActivity.peer.gps = new Peer.GPS()
-        uploadPeerToPeerList(MainActivity.peer);
+        //MainActivity.receiver.gps = new Receiver.GPS()
+        uploadPeerToPeerList(MainActivity.receiver);
 
     }
 
-    private void uploadPeerToPeerList(final Peer peer){
+    private void uploadPeerToPeerList(final Receiver receiver){
 
         // Set online LED to offline
         ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
@@ -145,14 +159,14 @@ public class MainReceiverFragment extends Fragment {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                mutableData.child(DB_USERNAME).setValue(peer.username);
-                mutableData.child(DB_PHOTOPATH).setValue(peer.photoPath);
-                mutableData.child(DB_TIMESTAMP).setValue(peer.timestamp);
-                mutableData.child(DB_ISRECEIVER).setValue(peer.isReceiver);
-                mutableData.child(DB_GPS).child("north").setValue(peer.gps.north);
-                mutableData.child(DB_GPS).child("east").setValue(peer.gps.east);
-                mutableData.child(DB_GPS).child("time_last_update").setValue(peer.gps.time_last_update);
-                mutableData.child(DB_SENDERNAME).setValue(peer.senderName);
+                mutableData.child(DB_USERNAME).setValue(receiver.username);
+                mutableData.child(DB_PHOTOPATH).setValue(receiver.photoPath);
+                mutableData.child(DB_TIMESTAMP).setValue(receiver.timestamp);
+                mutableData.child(DB_ISRECEIVER).setValue(receiver.isReceiver);
+                mutableData.child(DB_GPS).child("north").setValue(receiver.gps.north);
+                mutableData.child(DB_GPS).child("east").setValue(receiver.gps.east);
+                mutableData.child(DB_GPS).child("time_last_update").setValue(receiver.gps.time_last_update);
+                mutableData.child(DB_SENDERNAME).setValue(receiver.senderName);
                 return Transaction.success(mutableData);
             }
 
@@ -171,8 +185,8 @@ public class MainReceiverFragment extends Fragment {
         peerRef.child(DB_SENDERNAME).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!initialized) {
-                    initialized = true;
+                if (!isOnline) {
+                    isOnline = true;
                 } else {
                     //TODO: activity launch goes here!
                     String sendername = dataSnapshot.getValue(String.class);
@@ -183,19 +197,26 @@ public class MainReceiverFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
 
-    //region Fragment stuff
+    public void disconnectPeer(){
 
+        ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
+        Drawable d = getResources().getDrawable(android.R.drawable.presence_away);
+        statusLED.setImageDrawable(d);
+
+        peerRef.removeValue();
+    }
+
+    //region Fragment stuff
     @Override
     public void onResume() {
         super.onResume();
 
-        if (initialized) {
-            uploadPeerToPeerList(MainActivity.peer);
+        if (isOnline) {
+            uploadPeerToPeerList(MainActivity.receiver);
         }
     }
 
@@ -203,12 +224,7 @@ public class MainReceiverFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
-        Drawable d = getResources().getDrawable(android.R.drawable.presence_away);
-        statusLED.setImageDrawable(d);
-
-        //TODO: Delete peer from peerlist
-        peerRef.removeValue();
+        disconnectPeer();
     }
 
     @Override

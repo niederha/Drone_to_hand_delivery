@@ -106,13 +106,18 @@ public class MainSenderFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
 //        databaseRef.child("profiles").child(idUser).child("recordings").removeEventListener(mFirebaseRecordingListener);
     }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+
+
     }
+
+
 
     private class PeerAdapter extends ArrayAdapter<Profile> {
         private int row_layout;

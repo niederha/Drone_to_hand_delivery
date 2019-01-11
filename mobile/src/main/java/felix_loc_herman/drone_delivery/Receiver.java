@@ -2,7 +2,7 @@ package felix_loc_herman.drone_delivery;
 
 import java.io.Serializable;
 
-public class Peer implements Serializable {
+public class Receiver implements Serializable {
 
     String username;
     String photoPath;
@@ -11,11 +11,10 @@ public class Peer implements Serializable {
     String senderName;
     GPS gps;
 
-    Peer(String username, String photoPath) {
+    Receiver(String username, String photoPath) {
         this.username    = username;
         this.photoPath   = photoPath;
         this.timestamp   = (int) System.currentTimeMillis();
-        this.isReceiver  = true;
         this.senderName  = "A_SENDER_HAS_NO_NAME";
         this.gps = new GPS(this.timestamp);
     }

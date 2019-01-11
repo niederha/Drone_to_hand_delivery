@@ -27,4 +27,5 @@
     <string name="main_online_status">Online status</string>
     <string name="eta">ETA</string>
     <string name="status">Status</string>
+    <string name="connect">Connect</string>
 </resources>

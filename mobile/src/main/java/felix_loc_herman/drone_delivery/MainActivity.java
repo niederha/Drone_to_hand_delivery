@@ -1,13 +1,9 @@
 package felix_loc_herman.drone_delivery;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements
         MainReceiverFragment.OnFragmentInteractionListener,
@@ -21,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements
     private Profile userProfile = null;
     private String userID;
 
-    public static Peer peer;
+    public static Receiver receiver;
 
     private SectionsStatePagerAdapter sectionsStatePagerAdapter;
     private MainReceiverFragment mainReceiverFragment;
@@ -54,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements
 
         // set default tab
         viewPager.setCurrentItem(sectionsStatePagerAdapter.getPositionByTitle(getString(R.string.tab_title_receiver)));
+
+        //setupOnPageChangeListener(viewPager);
         //endregion
 
     }
@@ -63,6 +61,25 @@ public class MainActivity extends AppCompatActivity implements
         sectionsStatePagerAdapter.addFragment(mainSenderFragment, getString(R.string.tab_title_sender));
         viewPager.setAdapter(sectionsStatePagerAdapter);
     }
+//
+//    private void setupOnPageChangeListener(ViewPager viewPager) {
+//        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+//
+//            // This method will be invoked when a new page becomes selected.
+//            @Override
+//            public void onPageSelected(int position) {
+//                switch (position){
+//                    case 0:
+//                        break;
+//                    case 1:
+//                        MainReceiverFragment.disconnectPeer();
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
