@@ -10,7 +10,7 @@
         android:id="@+id/activtyMap_state_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="Drone flying to receiver :"
         android:layout_weight="0"/>
 
     <LinearLayout

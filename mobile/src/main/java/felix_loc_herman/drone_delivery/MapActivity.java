@@ -49,7 +49,14 @@ public class MapActivity extends AppCompatActivity implements
     private double drone_longitude;
     private double drone_latitude;
     private boolean cancelled_by_receiver;
+    private int status;
 
+    private final int DRONE_FLYING_TO_RECEIVER=5;
+    private final int DRONE_NEAR_RECEIVER=6;
+    private final int DRONE_LANDING_AT_RECEIVER=7;
+    private final int DRONE_LANDED_AT_RECEIVER=8;
+    private final int DRONE_FLYING_BACK_TO_SENDER=9;
+    private final int DRONE_LANDED_AT_SENDER=10;
 
     public static final String RECEIVE_LOCATION = "RECEIVE_LOCATION";
     public static final String LONGITUDE = "LONGITUDE";
@@ -67,7 +74,7 @@ public class MapActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cancelled_by_receiver=false;
-
+        status=DRONE_FLYING_TO_RECEIVER;
 
         setContentView(R.layout.activity_map);
 
@@ -90,46 +97,7 @@ public class MapActivity extends AppCompatActivity implements
         deliveryRef = deliveryGetRef.child(sender_username);
 
         deliveryRef.addValueEventListener(new MapActivity.DeliveryUpdateEventListener(this));
-    /*
 
-        // Get recording information from Firebase
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference profileGetRef = database.getReference("profiles");
-        recordingRef = profileGetRef.child(userID).child("recordings").child
-                (recID);
-
-        recordingRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                TextView exerciseType = findViewById(R.id.exerciseTypeLive);
-                exerciseType.setText(dataSnapshot.child("exercise_type")
-                        .getValue().toString());
-                TextView exerciseDatetime = findViewById(R.id
-                        .exerciseDateTimeLive);
-                Long datetime = Long.parseLong(dataSnapshot.child("datetime")
-                        .getValue().toString
-                                ());
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy" +
-                        " hh:mm:ss", Locale
-                        .getDefault());
-                exerciseDatetime.setText(formatter.format(new Date(datetime)));
-                String switchWatch = dataSnapshot.child("switch_watch")
-                        .getValue().toString();
-                String switchBelt = dataSnapshot.child("switch_hr_belt")
-                        .getValue().toString();
-                TextView hrWatch = findViewById(R.id.exerciseHRwatchLive);
-                hrWatch.setText(switchWatch);
-                TextView hrBelt = findViewById(R.id.exerciseHRbeltLive);
-                hrBelt.setText(switchBelt);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-*/
     }
 
 
@@ -180,7 +148,7 @@ public class MapActivity extends AppCompatActivity implements
             double new_drone_latitude=dataSnapshot.child("drone_GPS").child("north").getValue(Double.class).doubleValue();
             double new_drone_longitude=dataSnapshot.child("drone_GPS").child("east").getValue(Double.class).doubleValue();
             boolean new_cancelled_by_receiver=dataSnapshot.child("cancelled").getValue(Boolean.class).booleanValue();     //retrieve cancelling status
-
+            int new_status=dataSnapshot.child("status").getValue(Integer.class).intValue();
 
             if(new_cancelled_by_receiver && !cancelled_by_receiver) {    //the receiver cancelled the delivery
                 cancelled_by_receiver=true;
@@ -209,6 +177,32 @@ public class MapActivity extends AppCompatActivity implements
                 updateMap();
             }
 
+            if(new_status!=status)
+            {
+                status=new_status;
+                if(status==DRONE_NEAR_RECEIVER)
+                {
+                    //TODO
+                }
+                else if(status==DRONE_LANDING_AT_RECEIVER)
+                {
+                    //TODO
+                }
+                else if(status==DRONE_LANDED_AT_RECEIVER)
+                {
+                    //TODO
+                }
+                else if(status==DRONE_FLYING_BACK_TO_SENDER)
+                {
+                    //TODO
+                }
+                else if(status==DRONE_FLYING_BACK_TO_SENDER)
+                {
+                    //TODO
+                }
+            }
+
+            //TODO : determine when and how to change status
 
         }
 
