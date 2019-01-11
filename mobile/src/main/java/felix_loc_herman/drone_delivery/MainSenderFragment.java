@@ -162,18 +162,13 @@ public class MainSenderFragment extends Fragment {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            // Reference to the row View
-            View row = convertView;
 
-            if (row == null) {
-                // Inflate it from layout
-                row = LayoutInflater.from(getContext()).inflate(row_layout, parent, false);
-            }
+            final View row = LayoutInflater.from(getContext()).inflate(row_layout, parent, false);
 
             ((TextView) row.findViewById(R.id.username)).setText(getItem(position).username);
 
             String eta = calculateETA(getItem(position).gps );
-            ((TextView) row.findViewById(R.id.etaText)).setText(eta);
+            ((TextView) row.findViewById(R.id.etaValue)).setText(eta);
 
             String sendername = getItem(position).senderName;
             if (sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
@@ -193,8 +188,9 @@ public class MainSenderFragment extends Fragment {
                 public void onSuccess(byte[] bytes) {
                     if (isAdded()) {
                         final Bitmap downloadedImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        ImageView imageView = fragmentView.findViewById(R.id.userImage);
-                        imageView.setImageBitmap(downloadedImage);
+                        ((ImageView) row.findViewById(R.id.userImage)).setImageBitmap(downloadedImage);
+                        //ImageView imageView = fragmentView.findViewById(R.id.userImage);
+                        //imageView.setImageBitmap(downloadedImage);
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
