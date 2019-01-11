@@ -30,6 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Map;
+
 public class MainSenderFragment extends Fragment {
 
     public static final String USER_PROFILE = "USER_PROFILE";
@@ -59,7 +61,7 @@ public class MainSenderFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Profile userProfile;
     private View fragmentView;
-    //private String userID;
+    private Map<String,String> keyMap;
 
     private ListView listView;
     private ReceiverAdapter receiverAdapter;
@@ -88,24 +90,50 @@ public class MainSenderFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast.makeText(getContext(), "Sending to user: "
-                        + ((TextView) view.findViewById(R.id.username)).getText().toString(),
-                        Toast.LENGTH_SHORT).show();
+                String receiverName = ((TextView) view.findViewById(R.id.username)).getText().toString();
+
+                Toast.makeText(getContext(), "Sending to user: " + receiverName, Toast.LENGTH_SHORT).show();
+
+                //TODO: alert receiver with sender username
+                alertReceiver(receiverName);
 
                 //TODO: Start activity GenerateFormActivity through intent
             }
         });
-//
-//        userID = getActivity().getIntent().getExtras().getString(USER_ID);
 
         return fragmentView;
-
     }
 
-    private void onRefreshButtonClicked(View view) {
-        //onDestroy();
+    private void alertReceiver(String receivername) {
+
+        String receiverKey = keyMap.get(receivername);
+        final Receiver receiver = new Receiver();
+
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference(DB_RECEIVER);
+        databaseReference.child(receiverKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                receiver.username = dataSnapshot.child(DB_USERNAME).getValue(String.class);
+                receiver.photoPath = dataSnapshot.child(DB_PHOTOPATH).getValue(String.class);
+                receiver.senderName = MainActivity.receiver.username;
+                receiver.timestamp = dataSnapshot.child(DB_TIMESTAMP).getValue(Integer.class);
+                receiver.gps.north = dataSnapshot.child(DB_GPS).child(DB_NORTH).getValue(Double.class);
+                receiver.gps.east = dataSnapshot.child(DB_GPS).child(DB_EAST).getValue(Double.class);
+                receiver.gps.time_last_update = dataSnapshot.child(DB_GPS).child(DB_GPSTIME).getValue(Integer.class);
+
+                // TODO: create upload task and make sure it overwrites and NOT creates a new entry in DB_RECEIVER
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
+    //region Fragment and listView stuff
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -144,7 +172,6 @@ public class MainSenderFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 
     private class ReceiverAdapter extends ArrayAdapter<Receiver> {
         private int row_layout;
@@ -224,6 +251,8 @@ public class MainSenderFragment extends Fragment {
                 receiver.gps.east = rec.child(DB_GPS).child(DB_EAST).getValue(Double.class);
                 receiver.gps.time_last_update = rec.child(DB_GPS).child(DB_GPSTIME).getValue(Integer.class);
                 receiverAdapter.add(receiver);
+
+                keyMap.put(receiver.username, rec.getKey());
             }
             statusLED = fragmentView.findViewById(R.id.senderOnlineStatusIndicator);
             d = getResources().getDrawable(android.R.drawable.presence_online);
@@ -237,4 +266,5 @@ public class MainSenderFragment extends Fragment {
             statusLED.setImageDrawable(d);
         }
     }
+    //endregion
 }
