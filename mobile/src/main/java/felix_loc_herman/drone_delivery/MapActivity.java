@@ -40,17 +40,25 @@ import static android.graphics.Color.TRANSPARENT;
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback {
 
+    private DroneHandler droneHandler;
+    private String sender_username;
+    private String receiver_username;
+    private DatabaseReference deliveryRef;
+    private double distance;
+    private double ETA;
+    private double drone_longitude;
+    private double drone_latitude;
+    private boolean cancelled_by_receiver;
+
+
     public static final String RECEIVE_LOCATION = "RECEIVE_LOCATION";
     public static final String LONGITUDE = "LONGITUDE";
     public static final String LATITUDE = "LATITUDE";
-    public static final String RECEIVE_DATA_EXERCISE =
-            "RECEIVE_DATA_EXERCISE";
+    //public static final String RECEIVE_DATA_EXERCISE = "RECEIVE_DATA_EXERCISE";
     private final String TAG = this.getClass().getSimpleName();
 
-    private ArrayList<Integer> hrDataArrayList = new ArrayList<>();
+    //private ArrayList<Integer> hrDataArrayList = new ArrayList<>();
 
-    private LocationBroadcastReceiver locationBroadcastReceiver;
-    private HeartRateBroadcastReceiver heartRateBroadcastReceiver;
 
     private GoogleMap mMap;
     private DatabaseReference recordingRef;
@@ -58,19 +66,30 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cancelled_by_receiver=false;
+
+
         setContentView(R.layout.activity_map);
 
-        // Obtain the SupportMapFragment and get notified when the map is
-        // ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment)
-                getSupportFragmentManager()
-                        .findFragmentById(R.id.GoogleMap);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.GoogleMap);
         mapFragment.getMapAsync(this);
 
-        Intent intentFromRec = getIntent();
-        //String userID = intentFromRec.getStringExtra(MyProfileFragment.USER_ID);
-        //String recID = intentFromRec.getStringExtra(NewRecordingFragment             .RECORDIND_ID);
+        //get extras from intent
+        Bundle b=getIntent().getExtras();
+        sender_username=b.getString("username");
+        receiver_username=b.getString("receiver_username");
+        droneHandler=new DroneHandler(getApplicationContext());//TODO : initialize drone handler with the one received as an intent istead
 
+
+
+
+        //connect to firebase
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference deliveryGetRef = database.getReference("deliveries");
+        deliveryRef = deliveryGetRef.child(sender_username);
+
+        deliveryRef.addValueEventListener(new MapActivity.DeliveryUpdateEventListener(this));
     /*
 
         // Get recording information from Firebase
@@ -113,30 +132,6 @@ public class MapActivity extends AppCompatActivity implements
 */
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Get the HR data back from the watch
-        heartRateBroadcastReceiver = new HeartRateBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver
-                (heartRateBroadcastReceiver, new
-                        IntentFilter("RECEIVE_HEART_RATE"));
-
-        // Get the location data back from the watch
-        locationBroadcastReceiver = new LocationBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver
-                (locationBroadcastReceiver, new
-                        IntentFilter(RECEIVE_LOCATION));
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(heartRateBroadcastReceiver);
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationBroadcastReceiver);
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -152,129 +147,78 @@ public class MapActivity extends AppCompatActivity implements
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
         mMap.addMarker(new MarkerOptions().position(currentLocation).title("my marker"));
 
-        TextView longitudeTextView = findViewById(R.id.longitude);
-        longitudeTextView.setText(String.valueOf(longitude));
-        TextView latitudeTextView = findViewById(R.id.latitude);
-        latitudeTextView.setText(String.valueOf(latitude));
     }
 
+    public void activityMap_Cancelbutton(View view) {
+        //TODO
+    }
 
+    public void updateMap()
+    {
+        //TODO : complete
 
-    private class HeartRateBroadcastReceiver extends BroadcastReceiver {
+        // Update map
+        LatLng currentLocation = new LatLng(drone_latitude, drone_longitude);
+        Log.e(TAG, "Current location: " + currentLocation);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(currentLocation)
+                .title("my marker"));
+    }
+
+    private class DeliveryUpdateEventListener implements ValueEventListener {         //listener to listen to changes in firebase
+        private Context context;
+
+        DeliveryUpdateEventListener(Context context) {
+            this.context=context;
+        }
 
         @Override
-        public void onReceive(Context context, Intent intent) {
-            // Show HR in a TextView
-            int heartRateWatch = intent.getIntExtra("HEART_RATE", -1);
-            TextView hrTextView = findViewById(R.id.exerciseHRwatchLive);
-            hrTextView.setText(String.valueOf(heartRateWatch));
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            double new_distance=dataSnapshot.child("distance").getValue(Double.class).doubleValue();     //retrieve distance
+            double new_ETA=dataSnapshot.child("ETA").getValue(Double.class).doubleValue();     //retrieve ETA
+            double new_drone_latitude=dataSnapshot.child("drone_GPS").child("north").getValue(Double.class).doubleValue();
+            double new_drone_longitude=dataSnapshot.child("drone_GPS").child("east").getValue(Double.class).doubleValue();
+            boolean new_cancelled_by_receiver=dataSnapshot.child("cancelled").getValue(Boolean.class).booleanValue();     //retrieve cancelling status
 
-//            // Add HR value to HR ArrayList
-//            hrDataArrayList.add(heartRateWatch);
+
+            if(new_cancelled_by_receiver && !cancelled_by_receiver) {    //the receiver cancelled the delivery
+                cancelled_by_receiver=true;
+                //TODO : make drone fly back to sender
+            }
+
+
+            if(new_ETA!=ETA)
+            {
+                ETA=new_ETA;
+                TextView tv_ETA=(TextView) findViewById(R.id.activityMap_ETA_textView);
+                tv_ETA.setText(String.valueOf(ETA));
+            }
+
+            if(new_distance!=distance)
+            {
+                distance=new_distance;
+                TextView tv_dist=(TextView) findViewById(R.id.activityMap_distance_textView);
+                tv_dist.setText(String.valueOf(distance));
+            }
+
+            if(new_drone_longitude!=drone_longitude || new_drone_latitude!=drone_latitude)
+            {
+                drone_latitude=new_drone_latitude;
+                drone_longitude=new_drone_latitude;
+                updateMap();
+            }
 
 
         }
-    }
-
-    private class LocationBroadcastReceiver extends BroadcastReceiver {
 
         @Override
-        public void onReceive(Context context, Intent intent) {
-            // Update TextViews
-            double longitude = intent.getDoubleExtra(LONGITUDE, -1);
-            double latitude = intent.getDoubleExtra(LATITUDE, -1);
-
-            TextView longitudeTextView = findViewById(R.id.longitude);
-            longitudeTextView.setText(String.valueOf(longitude));
-
-            TextView latitudeTextView = findViewById(R.id.latitude);
-            latitudeTextView.setText(String.valueOf(latitude));
-
-            // Update map
-            LatLng currentLocation = new LatLng(latitude, longitude);
-            Log.e(TAG, "Current location: " + currentLocation);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(currentLocation)
-                    .title("my marker"));
+        public void onCancelled(@NonNull DatabaseError databaseError) {
         }
     }
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
-
-    private GoogleMap mMap;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
-
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     *
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
-}*/
+//TODO : include changes in receiver position
+//TODO : manage timeout of receiver GPS (ie make the drone fly back if no GPS signal received from receiver for more than a given time

@@ -35,6 +35,7 @@
             android:onClick="toMainActivityClicked"
             android:text="To Main activity" />
 
+
         <Button
             android:id="@+id/toLogin"
             android:layout_width="wrap_content"
@@ -42,6 +43,14 @@
             android:layout_weight="1"
             android:onClick="toLoginActivityClicked"
             android:text="To login activity" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/toCreateForm"
@@ -50,6 +59,14 @@
             android:layout_weight="1"
             android:onClick="toCreteFormActivityClicked"
             android:text="To create form" />
+
+        <Button
+            android:id="@+id/toMapActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="toMapActivityClicked"
+            android:text="To map activity" />
 
     </LinearLayout>
 
