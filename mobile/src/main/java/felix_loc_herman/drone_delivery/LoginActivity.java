@@ -102,23 +102,24 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-        startActivityForResult(intentEditProfile, REGISTER_PROFILE);
+        startActivity(intentEditProfile);
+        //startActivityForResult(intentEditProfile, REGISTER_PROFILE);
     }
 
 //endregion
 
-    @Override // onActivityForResult is called when editProfileActivity finishes
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REGISTER_PROFILE && resultCode == RESULT_OK && data != null) {
-            userProfile = (Profile) data.getSerializableExtra(MainActivity.USER_PROFILE);
-            if (userProfile != null) {
-                TextView usernameTextView = findViewById(R.id.username);
-                TextView passwordTextView = findViewById(R.id.password);
-                usernameTextView.setText(userProfile.username);
-                passwordTextView.setText(userProfile.getHashedPassword());
-            }
-        }
-    }
+//    @Override // onActivityForResult is called when editProfileActivity finishes
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == REGISTER_PROFILE && resultCode == RESULT_OK && data != null) {
+//            userProfile = (Profile) data.getSerializableExtra(MainActivity.USER_PROFILE);
+//            if (userProfile != null) {
+//                TextView usernameTextView = findViewById(R.id.username);
+//                TextView passwordTextView = findViewById(R.id.password);
+//                usernameTextView.setText(userProfile.username);
+//                passwordTextView.setText(userProfile.getHashedPassword());
+//            }
+//        }
+//    }
 }
