@@ -28,11 +28,12 @@ import static android.content.ContentValues.TAG;
 public class DroneHandler implements Serializable {
 
     private ARDiscoveryServicesDevicesListUpdatedReceiver receiver;
-    private Context context;
 
+    public enum droneState{
+        IDLE, GOING_TOR_ECIVER, WATINTG_TO_LAND, LANDED_AT_RECIEVER, GOING_BACK
+    }
     public DroneHandler(Context context){
         ARSDK.loadSDKLibs();
-        this.context = context;
     }
 
     //region PublicFunctions
@@ -83,7 +84,7 @@ public class DroneHandler implements Serializable {
         return 1;
     }
     //endregion
-
+    /*
     private ARDiscoveryService mArdiscoveryService = null;
     private ServiceConnection mArdiscoveryServiceConnection = null; // Connection to the drone
 
@@ -186,7 +187,7 @@ public class DroneHandler implements Serializable {
             }).start();
         }
     }
-
+    */
 
 
 
