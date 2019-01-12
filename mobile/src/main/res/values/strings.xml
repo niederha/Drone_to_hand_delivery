@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">drone_delivery</string>
+    <string name="app_name">Drone delivery</string>
 
     <string name="tab_title_receiver">Receive</string>
     <string name="tab_title_sender">Send</string>
@@ -33,4 +33,6 @@
     <string name="user_busy">User busy!</string>
     <string name="me">Me</string>
     <string name="that_is_you">That\'s you!</string>
+
+    <string name="title_activity_map">Map</string>
 </resources>

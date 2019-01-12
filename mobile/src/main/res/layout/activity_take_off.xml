@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/activityTakeOff_distanceText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Distance :"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/activityTakeOff_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/activityTakeOff_ETAText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ETA :"
+            />
+
+        <TextView
+            android:id="@+id/activityTakeOff_ETA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0" />
+    </LinearLayout>
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/activityTakeOff_TakeOffText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Switch to take off" />
+
+    <Switch
+        android:id="@+id/activityTakeOff_TakeOffSWitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Switch"
+        android:onClick="activityTakeOff_TakeOffSWitch_switched"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/activityTakeOff_CancelButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:onClick="activityTakeOff_CancelButton_Clicked"/>
+</LinearLayout>

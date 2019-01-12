@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "578367485130",
-    "firebase_url": "https://dronedelivery-95004.firebaseio.com",
-    "project_id": "dronedelivery-95004",
-    "storage_bucket": "dronedelivery-95004.appspot.com"
+    "project_number": "45446812301",
+    "firebase_url": "https://dronetohanddelivery.firebaseio.com",
+    "project_id": "dronetohanddelivery",
+    "storage_bucket": "dronetohanddelivery.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:578367485130:android:2de1eccc854f1669",
+        "mobilesdk_app_id": "1:45446812301:android:2de1eccc854f1669",
         "android_client_info": {
           "package_name": "felix_loc_herman.drone_delivery"
         }
       },
       "oauth_client": [
         {
-          "client_id": "578367485130-f14u9gvnujl34vkla7hmcsdmgtfm079p.apps.googleusercontent.com",
+          "client_id": "45446812301-9m5j5ng3duqm0ab5b1sgogq2o2dqf9ea.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "felix_loc_herman.drone_delivery",
-            "certificate_hash": "0d080de52ac590796dbc29eb8f3a175e9b2d4aff"
+            "certificate_hash": "686567e83e778935f263c1d85f00d9cfe0a1a6e7"
           }
         },
         {
-          "client_id": "578367485130-kpqooin4skaop4ndchv23q3v3l07n9au.apps.googleusercontent.com",
+          "client_id": "45446812301-95mj408n8m0o8s6lfh9upn1hspgucefi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAhceM04PLbVl2sX2X3NQPUSyHjvoVbPFI"
+          "current_key": "AIzaSyD4iaKUpKUiqPPwmOUPoNaBqqCnGp3D8qM"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "578367485130-kpqooin4skaop4ndchv23q3v3l07n9au.apps.googleusercontent.com",
+              "client_id": "45446812301-95mj408n8m0o8s6lfh9upn1hspgucefi.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

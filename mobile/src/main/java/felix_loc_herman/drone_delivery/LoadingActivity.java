@@ -36,6 +36,26 @@ public class LoadingActivity extends AppCompatActivity {
 
     }
 
+    public void     toCreteFormActivityClicked (View view){
+        Log.v(TAG, "To CreateForm Activity button clicked");
+
+        Intent intent = new Intent(LoadingActivity.this, CreateFormActivity.class);
+        intent.putExtra("username","fake_sender_username");
+        intent.putExtra("receiver_username","fake_receiver_username");
+        LoadingActivity.this.startActivity(intent);
+
+    }
+
+    public void     toMapActivityClicked (View view){
+        Log.v(TAG, "To Map Activity button clicked");
+
+        Intent intent = new Intent(LoadingActivity.this, MapActivity.class);
+        intent.putExtra("username","fake_sender_username");
+        intent.putExtra("receiver_username","fake_receiver_username");
+        Log.e("LOADING_ACTIVITY","Warning : in order for this button to work properly, the delivery from fake_sender_username to fake_receiver_username has to be already set properly in firebase (otherways you might get errors because things are not initialized properly)");
+        LoadingActivity.this.startActivity(intent);
+
+    }
 
 
 }

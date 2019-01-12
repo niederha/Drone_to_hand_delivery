@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.parrot:libARDataTransfer-3.13.1">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/libARDataTransfer-3.13.1.aar/8a24b92a62f22174d3de8db3e75ecc7d/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/libARDataTransfer-3.13.1.aar/8a24b92a62f22174d3de8db3e75ecc7d/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.parrot/libARDataTransfer/3.13.1/21f7925ddfdbf388b01ae2510894436c40ba7d8a/libARDataTransfer-3.13.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
