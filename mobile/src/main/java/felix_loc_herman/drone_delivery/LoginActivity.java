@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
 //region Button XML Callbacks
 
     public void loginButtonClicked(View view) {
-        // TODO: Smarter way than downloading the entire database for each login?
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference(DB_PROFILES);
 
@@ -103,23 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         startActivity(intentEditProfile);
-        //startActivityForResult(intentEditProfile, REGISTER_PROFILE);
     }
 
 //endregion
-
-//    @Override // onActivityForResult is called when editProfileActivity finishes
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == REGISTER_PROFILE && resultCode == RESULT_OK && data != null) {
-//            userProfile = (Profile) data.getSerializableExtra(MainActivity.USER_PROFILE);
-//            if (userProfile != null) {
-//                TextView usernameTextView = findViewById(R.id.username);
-//                TextView passwordTextView = findViewById(R.id.password);
-//                usernameTextView.setText(userProfile.username);
-//                passwordTextView.setText(userProfile.getHashedPassword());
-//            }
-//        }
-//    }
 }

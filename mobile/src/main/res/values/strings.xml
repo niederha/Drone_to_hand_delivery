@@ -31,4 +31,6 @@
     <string name="rec_ready">Ready</string>
     <string name="rec_busy">Busy</string>
     <string name="user_busy">User busy!</string>
+    <string name="me">Me</string>
+    <string name="that_is_you">That\'s you!</string>
 </resources>

@@ -33,7 +33,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class MainSenderFragment extends Fragment {
 
@@ -93,15 +92,19 @@ public class MainSenderFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // Get the status of the receiver, connect if available
                 TextView textView = view.findViewById(R.id.statusTextChangeMe);
                 String status = textView.getText().toString();
 
                 if ( status.equals(getString(R.string.rec_busy)) ){
                     Toast.makeText(getContext(),R.string.user_busy, Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     String receiverName = ((TextView) view.findViewById(R.id.username)).getText().toString();
-                    alertReceiverAndStartSending(receiverName);
+                    if (receiverName.equals(MainActivity.userProfile.username)) // Do not connect to yourself
+                        Toast.makeText(getContext(), R.string.that_is_you, Toast.LENGTH_SHORT).show();
+                    else
+                        alertReceiverAndStartSending(receiverName);
                 }
             }
         });
@@ -150,7 +153,6 @@ public class MainSenderFragment extends Fragment {
                         Toast.makeText(getContext(), "Connected to " + receivername, Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
 
             @Override
@@ -239,17 +241,27 @@ public class MainSenderFragment extends Fragment {
 
             final View row = LayoutInflater.from(getContext()).inflate(row_layout, parent, false);
 
-            ((TextView) row.findViewById(R.id.username)).setText(getItem(position).username);
+            String username = getItem(position).username;
+            ((TextView) row.findViewById(R.id.username)).setText(username);
 
-            String eta = calculateETA(getItem(position).gps );
-            ((TextView) row.findViewById(R.id.etaValue)).setText(eta);
-
-            String sendername = getItem(position).senderName;
-            if (sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
-                ((TextView) row.findViewById(R.id.statusTextChangeMe)).setText(R.string.rec_ready);
+            if (username.equals(MainActivity.userProfile.username)){
+                (row.findViewById(R.id.meTextView)).setVisibility(View.VISIBLE);
+                (row.findViewById(R.id.etaText)).setVisibility(View.INVISIBLE);
+                (row.findViewById(R.id.etaValue)).setVisibility(View.INVISIBLE);
+                (row.findViewById(R.id.statusText)).setVisibility(View.INVISIBLE);
+                (row.findViewById(R.id.statusTextChangeMe)).setVisibility(View.INVISIBLE);
             } else {
-                ((TextView) row.findViewById(R.id.statusTextChangeMe)).setText(R.string.rec_busy);
+                String sendername = getItem(position).senderName;
+                if (sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
+                    ((TextView) row.findViewById(R.id.statusTextChangeMe)).setText(R.string.rec_ready);
+                } else {
+                    ((TextView) row.findViewById(R.id.statusTextChangeMe)).setText(R.string.rec_busy);
+                }
+
+                String eta = calculateETA(getItem(position).gps);
+                ((TextView) row.findViewById(R.id.etaValue)).setText(eta);
             }
+
 
             //region Set profile picture
             String photoPath = getItem(position).photoPath;

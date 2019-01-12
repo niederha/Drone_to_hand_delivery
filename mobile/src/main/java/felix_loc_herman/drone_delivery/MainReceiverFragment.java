@@ -65,7 +65,6 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //setHasOptionsMenu(true);
     }
 
@@ -85,8 +84,10 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
         } else {
             MainActivity.userProfile = (Profile) intent.getSerializableExtra(USER_PROFILE);
-            TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-            textView.setText(MainActivity.userProfile.username);
+//            //region Set username to headline
+//            TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
+//            textView.setText(MainActivity.userProfile.username);
+//            //endregion
 
             isInitialized = true;
         }
@@ -146,15 +147,16 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
                 MainActivity.userProfile = new Profile(db_username, db_password, db_photopath);
 
-                TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-                textView.setText(MainActivity.userProfile.username);
+//                //region Set username as headline
+//                TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
+//                textView.setText(MainActivity.userProfile.username);
+//                //endregion
 
                 isInitialized = true;
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Set online LED to offline
                 setLED(MainActivity.LED_COLOR.RED);
             }
         });
@@ -203,21 +205,20 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 if (!isOnline) {
                     isOnline = true;
                 } else {
-                    //TODO: activity launch goes here!
                     String sendername = dataSnapshot.getValue(String.class);
-                    TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-                    textView.setText(sendername + " connected!");
+                    if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) //TODO: activity launch goes here!
+                        Toast.makeText(getContext(), sendername + " connected!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                setLED(MainActivity.LED_COLOR.RED);
             }
         });
     }
 
     public void disconnectPeer(){
-
         setLED(MainActivity.LED_COLOR.YELLOW);
         peerRef.removeValue();
     }
