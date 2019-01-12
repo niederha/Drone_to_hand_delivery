@@ -124,7 +124,7 @@ public class MapActivity extends AppCompatActivity implements
     public void activityMap_Cancelbutton(View view) {   //note that this button is blocked once the drone started landing at receiver
         deliveryRef.child("cancelled").setValue(true);  //inform the receiver that we cancelled the delivery  //TODO : check if it threadsafe and correct
         Toast.makeText(this,"The delivery request has been cancelled successfully : the drone is now flying back to you",Toast.LENGTH_SHORT);
-        //TODO : change status to DRONE_FLYING_BACK_TO_SENDER and execute the same code as if it was a change due to the receiver's action
+        applyStatusChange(DRONE_FLYING_BACK_TO_SENDER);
     }
 
     public void updateMap()
@@ -139,6 +139,50 @@ public class MapActivity extends AppCompatActivity implements
         mMap.addMarker(new MarkerOptions().position(currentLocation)
                 .title("my marker"));
     }
+
+    private void applyStatusChange(int new_status)
+    {
+        Log.e("MapActivity","applying change in status");
+        //TODO : add notifications? What if not in foregroung?
+        if(status==DRONE_NEAR_RECEIVER) //TODO : change to DRONE_NEAR_RECEIVER has to be done by drone handler or by MapActivity (in the last case, maybe this bit of code has to be moved)
+        {
+            TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
+            tv_state.setText("Drone near receiver : waiting for receivers permission to land");
+        }
+        else if(status==DRONE_LANDING_AT_RECEIVER) //TODO(@receiver) : change to DRONE_LANDING_AT_RECEIVER done by receiver
+        {
+            TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
+            tv_state.setText("Drone landing at receiver");
+            droneHandler.land();
+            //TODO : waiting for landing done?
+
+            //block cancel button
+            Button btn = (Button) findViewById(R.id.activityMap_Cancelbutton);
+            btn.setEnabled(false);
+        }
+        else if(status==DRONE_LANDED_AT_RECEIVER) //TODO : change to DRONE_LANDED_AT_RECEIVER done by drone handler or Map activity
+        {
+            TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
+            tv_state.setText("Drone landed at receiver");
+
+        }
+        else if(status==DRONE_FLYING_BACK_TO_SENDER) //TODO(@receiver) : change to DRONE_FLYING_BACK_TO_SENDER done by receiver
+        {
+            TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
+            tv_state.setText("Drone flying back to sender");
+            droneHandler.takeOff();
+            droneHandler.getBack(); //TODO : replace by goTo?
+            //TODO : check if getBack take into account changes of location of sender
+
+        }
+        else if(status==DRONE_LANDED_AT_SENDER) //TODO : NEEDED? Who changes status to it?
+        {
+            //TODO : clear delivery data?
+            //TODO : go to main activity or to delivery summary
+        }
+    }
+
+
 
     private class DeliveryUpdateEventListener implements ValueEventListener {         //listener to listen to changes in firebase
         private Context context;
@@ -158,7 +202,8 @@ public class MapActivity extends AppCompatActivity implements
 
             if(new_cancelled_by_receiver && !cancelled_by_receiver) {    //the receiver cancelled the delivery
                 cancelled_by_receiver=true;
-                //TODO : change status to DRONE_FLYING_BACK_TO_SENDER and execute the same code as if it was a change due to the receiver's action
+                Toast.makeText(context,"The receiver cancelled the delivery : the drone is now flying back to you",Toast.LENGTH_LONG);
+                applyStatusChange(DRONE_FLYING_BACK_TO_SENDER);
             }
 
 
@@ -186,44 +231,7 @@ public class MapActivity extends AppCompatActivity implements
             if(new_status!=status)
             {
                 status=new_status;
-                //TODO : add notifications? What if not in foregroung?
-                if(status==DRONE_NEAR_RECEIVER) //TODO : change to DRONE_NEAR_RECEIVER has to be done by drone handler or by MapActivity (in the last case, maybe this bit of code has to be moved)
-                {
-                    TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
-                    tv_state.setText("Drone near receiver : waiting for receivers permission to land");
-                }
-                else if(status==DRONE_LANDING_AT_RECEIVER) //TODO(@receiver) : change to DRONE_LANDING_AT_RECEIVER done by receiver
-                {
-                    TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
-                    tv_state.setText("Drone landing at receiver");
-                    droneHandler.land();
-                    //TODO : waiting for landing done?
-
-                    //block cancel button
-                    Button btn = (Button) findViewById(R.id.activityMap_Cancelbutton);
-                    btn.setEnabled(false);
-                }
-                else if(status==DRONE_LANDED_AT_RECEIVER) //TODO : change to DRONE_LANDED_AT_RECEIVER done by drone handler or Map activity
-                {
-                    TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
-                    tv_state.setText("Drone landed at receiver");
-
-                }
-                else if(status==DRONE_FLYING_BACK_TO_SENDER) //TODO(@receiver) : change to DRONE_FLYING_BACK_TO_SENDER done by receiver
-                {
-                    TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
-                    tv_state.setText("Drone flying back to sender");
-                    droneHandler.takeOff();
-                    droneHandler.getBack();
-                    //TODO : check if takeOff is needed and if yes if the functions are in the right order and if some delay is needed
-                    //TODO : check if getBack take into account changes of location of sender
-
-                }
-                else if(status==DRONE_LANDED_AT_SENDER) //TODO : NEEDED? Who changes status to it?
-                {
-                    //TODO : clear delivery data?
-                    //TODO : go to main activity or to delivery summary
-                }
+                applyStatusChange(new_status);
             }
 
             //TODO : determine when and how to change status
