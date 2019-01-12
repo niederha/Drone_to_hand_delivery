@@ -26,10 +26,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MainSenderFragment extends Fragment {
@@ -59,9 +62,9 @@ public class MainSenderFragment extends Fragment {
     private final String TAG = this.getClass().getSimpleName();
 
     private OnFragmentInteractionListener mListener;
-    private Profile userProfile;
     private View fragmentView;
-    private Map<String,String> keyMap;
+
+    private HashMap<String,String> keyMap;
 
     private ListView listView;
     private ReceiverAdapter receiverAdapter;
@@ -70,6 +73,7 @@ public class MainSenderFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        keyMap = new HashMap<String, String>();
         super.onCreate(savedInstanceState);
     }
 
@@ -89,48 +93,94 @@ public class MainSenderFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView textView = view.findViewById(R.id.statusTextChangeMe);
+                String status = textView.getText().toString();
 
-                String receiverName = ((TextView) view.findViewById(R.id.username)).getText().toString();
-
-                Toast.makeText(getContext(), "Sending to user: " + receiverName, Toast.LENGTH_SHORT).show();
-
-                //TODO: alert receiver with sender username
-                alertReceiver(receiverName);
-
-                //TODO: Start activity GenerateFormActivity through intent
+                if ( status.equals(getString(R.string.rec_busy)) ){
+                    Toast.makeText(getContext(),R.string.user_busy, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    String receiverName = ((TextView) view.findViewById(R.id.username)).getText().toString();
+                    alertReceiverAndStartSending(receiverName);
+                }
             }
         });
 
         return fragmentView;
     }
 
-    private void alertReceiver(String receivername) {
+    private void alertReceiverAndStartSending(final String receivername) {
 
-        String receiverKey = keyMap.get(receivername);
+        setLED(MainActivity.LED_COLOR.YELLOW);
+
+        final String receiverKey = keyMap.get(receivername);
         final Receiver receiver = new Receiver();
 
-        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = firebaseDatabase.getReference(DB_RECEIVER);
-        databaseReference.child(receiverKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        final FirebaseDatabase firebaseDatabaseUp = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReferenceUp = firebaseDatabaseUp.getReference(DB_RECEIVER);
+        databaseReferenceUp.child(receiverKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 receiver.username = dataSnapshot.child(DB_USERNAME).getValue(String.class);
                 receiver.photoPath = dataSnapshot.child(DB_PHOTOPATH).getValue(String.class);
-                receiver.senderName = MainActivity.receiver.username;
+                receiver.senderName = MainActivity.userProfile.username;
                 receiver.timestamp = dataSnapshot.child(DB_TIMESTAMP).getValue(Integer.class);
                 receiver.gps.north = dataSnapshot.child(DB_GPS).child(DB_NORTH).getValue(Double.class);
                 receiver.gps.east = dataSnapshot.child(DB_GPS).child(DB_EAST).getValue(Double.class);
                 receiver.gps.time_last_update = dataSnapshot.child(DB_GPS).child(DB_GPSTIME).getValue(Integer.class);
 
-                // TODO: create upload task and make sure it overwrites and NOT creates a new entry in DB_RECEIVER
+                databaseReferenceUp.child(receiverKey).runTransaction(new Transaction.Handler() {
+                    @NonNull
+                    @Override
+                    public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                        mutableData.child(DB_USERNAME).setValue(receiver.username);
+                        mutableData.child(DB_PHOTOPATH).setValue(receiver.photoPath);
+                        mutableData.child(DB_SENDERNAME).setValue(receiver.senderName);
+                        mutableData.child(DB_TIMESTAMP).setValue(receiver.timestamp);
+                        mutableData.child(DB_GPS).child(DB_NORTH).setValue(receiver.gps.north);
+                        mutableData.child(DB_GPS).child(DB_EAST).setValue(receiver.gps.east);
+                        mutableData.child(DB_GPS).child(DB_GPSTIME).setValue(receiver.gps.time_last_update);
+
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                        setLED(MainActivity.LED_COLOR.GREEN);
+                        Toast.makeText(getContext(), "Connected to " + receivername, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Toast.makeText(getContext(), "Failed to contact " + receivername, Toast.LENGTH_SHORT).show();
+                setLED(MainActivity.LED_COLOR.RED);
             }
         });
+    }
+
+    void setLED(MainActivity.LED_COLOR color) {
+        ImageView statusLED = fragmentView.findViewById(R.id.senderOnlineStatusIndicator);
+        Drawable d;
+        switch (color) {
+            case OFF:
+                d = getResources().getDrawable(android.R.drawable.presence_invisible);
+                break;
+            case YELLOW:
+                d = getResources().getDrawable(android.R.drawable.presence_away);
+                break;
+            case GREEN:
+                d = getResources().getDrawable(android.R.drawable.presence_online);
+                break;
+            case RED:
+                d = getResources().getDrawable(android.R.drawable.presence_busy);
+                break;
+            default:
+                return;
+        }
+        statusLED.setImageDrawable(d);
     }
 
     //region Fragment and listView stuff
@@ -162,14 +212,11 @@ public class MainSenderFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        ImageView statusLED = fragmentView.findViewById(R.id.senderOnlineStatusIndicator);
-        Drawable d = getResources().getDrawable(android.R.drawable.presence_away);
-        statusLED.setImageDrawable(d);
+        setLED(MainActivity.LED_COLOR.YELLOW);
         databaseReference.child(DB_RECEIVER).removeEventListener(firebaseRecordingListener);
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
@@ -216,17 +263,13 @@ public class MainSenderFragment extends Fragment {
                     if (isAdded()) {
                         final Bitmap downloadedImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         ((ImageView) row.findViewById(R.id.userImage)).setImageBitmap(downloadedImage);
-                        //ImageView imageView = fragmentView.findViewById(R.id.userImage);
-                        //imageView.setImageBitmap(downloadedImage);
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(getContext(),"Profile picture download failed!", Toast.LENGTH_SHORT).show();
-                    ImageView statusLED = fragmentView.findViewById(R.id.senderOnlineStatusIndicator);
-                    Drawable d = getResources().getDrawable(android.R.drawable.presence_busy);
-                    statusLED.setImageDrawable(d);
+                    setLED(MainActivity.LED_COLOR.RED);
                 }
             });
             //endregion
@@ -237,9 +280,7 @@ public class MainSenderFragment extends Fragment {
     private class FirebaseRecordingListener implements ValueEventListener {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            ImageView statusLED = fragmentView.findViewById(R.id.senderOnlineStatusIndicator);
-            Drawable d = getResources().getDrawable(android.R.drawable.presence_away);
-            statusLED.setImageDrawable(d);
+            setLED(MainActivity.LED_COLOR.YELLOW);
             receiverAdapter.clear();
             for (final DataSnapshot rec : dataSnapshot.getChildren()) {
                 final Receiver receiver = new Receiver();
@@ -250,20 +291,16 @@ public class MainSenderFragment extends Fragment {
                 receiver.gps.north = rec.child(DB_GPS).child(DB_NORTH).getValue(Double.class);
                 receiver.gps.east = rec.child(DB_GPS).child(DB_EAST).getValue(Double.class);
                 receiver.gps.time_last_update = rec.child(DB_GPS).child(DB_GPSTIME).getValue(Integer.class);
-                receiverAdapter.add(receiver);
 
                 keyMap.put(receiver.username, rec.getKey());
+                receiverAdapter.add(receiver);
             }
-            statusLED = fragmentView.findViewById(R.id.senderOnlineStatusIndicator);
-            d = getResources().getDrawable(android.R.drawable.presence_online);
-            statusLED.setImageDrawable(d);
+            setLED(MainActivity.LED_COLOR.GREEN);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            ImageView statusLED = fragmentView.findViewById(R.id.senderOnlineStatusIndicator);
-            Drawable d = getResources().getDrawable(android.R.drawable.presence_busy);
-            statusLED.setImageDrawable(d);
+            setLED(MainActivity.LED_COLOR.RED);
         }
     }
     //endregion

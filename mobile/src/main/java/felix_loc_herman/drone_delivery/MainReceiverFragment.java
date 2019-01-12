@@ -53,7 +53,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     private final String TAG = this.getClass().getSimpleName();
 
     private OnFragmentInteractionListener mListener;
-    private Profile userProfile;
+    //private Profile userProfile;
     private View fragmentView;
     private String userID;
     private boolean isInitialized = false;
@@ -84,9 +84,9 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
             getUserProfileFromDB();
 
         } else {
-            userProfile = (Profile) intent.getSerializableExtra(USER_PROFILE);
+            MainActivity.userProfile = (Profile) intent.getSerializableExtra(USER_PROFILE);
             TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-            textView.setText(userProfile.username);
+            textView.setText(MainActivity.userProfile.username);
 
             isInitialized = true;
         }
@@ -97,6 +97,28 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
         return fragmentView;
     }
 
+    void setLED(MainActivity.LED_COLOR color) {
+        ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
+        Drawable d;
+        switch (color) {
+            case OFF:
+                d = getResources().getDrawable(android.R.drawable.presence_invisible);
+                break;
+            case YELLOW:
+                d = getResources().getDrawable(android.R.drawable.presence_away);
+                break;
+            case GREEN:
+                d = getResources().getDrawable(android.R.drawable.presence_online);
+                break;
+            case RED:
+                d = getResources().getDrawable(android.R.drawable.presence_busy);
+                break;
+            default:
+                return;
+        }
+        statusLED.setImageDrawable(d);
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isInitialized){
@@ -104,9 +126,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 initPeerToPeerList();
             } else {
                 disconnectPeer();
-                ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
-                Drawable d = getResources().getDrawable(android.R.drawable.presence_invisible);
-                statusLED.setImageDrawable(d);
+                setLED(MainActivity.LED_COLOR.OFF);
             }
         } else {
             Toast.makeText(getContext(),"Not ready", Toast.LENGTH_SHORT).show();
@@ -124,10 +144,10 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 String db_password = dataSnapshot.child(DB_PASSWORD).getValue(String.class);
                 String db_photopath = dataSnapshot.child(DB_PHOTOPATH).getValue(String.class);
 
-                userProfile = new Profile(db_username, db_password, db_photopath);
+                MainActivity.userProfile = new Profile(db_username, db_password, db_photopath);
 
                 TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-                textView.setText(userProfile.username);
+                textView.setText(MainActivity.userProfile.username);
 
                 isInitialized = true;
             }
@@ -135,15 +155,14 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Set online LED to offline
-                ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
-                Drawable d = getResources().getDrawable(android.R.drawable.presence_busy);
-                statusLED.setImageDrawable(d);
+                setLED(MainActivity.LED_COLOR.RED);
             }
         });
     }
 
     private void initPeerToPeerList(){
-        MainActivity.receiver = new Receiver(userProfile.username, userProfile.photoPath);
+        MainActivity.receiver = new Receiver(MainActivity.userProfile.username,
+                                             MainActivity.userProfile.photoPath);
         //TODO: get GPS and update it
         //MainActivity.receiver.gps = new Receiver.GPS()
         uploadPeerToPeerList(MainActivity.receiver);
@@ -152,10 +171,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
     private void uploadPeerToPeerList(final Receiver receiver){
 
-        // Set online LED to offline
-        ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
-        Drawable d = getResources().getDrawable(android.R.drawable.presence_away);
-        statusLED.setImageDrawable(d);
+        // Set online LED to busy
+        setLED(MainActivity.LED_COLOR.YELLOW);
 
         peerRef.runTransaction(new Transaction.Handler() {
             @NonNull
@@ -173,10 +190,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-                // Set online LED to online
-                ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
-                Drawable d = getResources().getDrawable(android.R.drawable.presence_online);
-                statusLED.setImageDrawable(d);
+                setLED(MainActivity.LED_COLOR.GREEN);
                 startListener();
             }
         });
@@ -204,10 +218,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
     public void disconnectPeer(){
 
-        ImageView statusLED = fragmentView.findViewById(R.id.onlineStatusIndicator);
-        Drawable d = getResources().getDrawable(android.R.drawable.presence_away);
-        statusLED.setImageDrawable(d);
-
+        setLED(MainActivity.LED_COLOR.YELLOW);
         peerRef.removeValue();
     }
 

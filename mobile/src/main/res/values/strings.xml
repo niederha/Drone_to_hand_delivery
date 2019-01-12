@@ -30,4 +30,5 @@
     <string name="connect">Connect</string>
     <string name="rec_ready">Ready</string>
     <string name="rec_busy">Busy</string>
+    <string name="user_busy">User busy!</string>
 </resources>

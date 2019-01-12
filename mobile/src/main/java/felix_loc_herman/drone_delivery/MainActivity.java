@@ -14,14 +14,14 @@ public class MainActivity extends AppCompatActivity implements
     public static final String USER_PROFILE = "USER_PROFILE";
     public static final String USER_ID = "USER_ID";
 
-    private Profile userProfile = null;
-    private String userID;
-
+    public static Profile userProfile;
     public static Receiver receiver;
 
     private SectionsStatePagerAdapter sectionsStatePagerAdapter;
     private MainReceiverFragment mainReceiverFragment;
     private MainSenderFragment mainSenderFragment;
+
+    public enum LED_COLOR {OFF, YELLOW, RED, GREEN}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
