@@ -41,12 +41,13 @@ public class TakeOffActivity extends AppCompatActivity {
 
 
         //TODO : if the drone isn't set up yet, lauch the set up activity for return
-        /*while(!droneHandler.isConnected())   //the drone is not connected yet
+       /* while(!droneHandler.isConnectedToDrone())   //the drone is not connected yet
         {
 
-            Intent intent = new Intent(this,TakeOffActivity.class);
+            Intent intent = new Intent(this,ConnectActivity.class);
             intent.putExtra("droneHandler",droneHandler);
             startActivity(intent);
+            //TODO : planify return?
         }*/
         setContentView(R.layout.activity_take_off);
 
@@ -80,7 +81,7 @@ public class TakeOffActivity extends AppCompatActivity {
 
         //TODO : set destination?
 
-        Intent intent = new Intent(this,MapActivity.class);//TODO : change the target activity
+        Intent intent = new Intent(this,MapActivity.class);
         intent.putExtra("username",sender_username);
         intent.putExtra("receiver_username",receiver_username);
         intent.putExtra("droneHandler",droneHandler);

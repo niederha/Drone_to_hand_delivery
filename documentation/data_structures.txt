@@ -34,7 +34,7 @@ my_database :
 			reciever : string value
 			cancelled : bool value	//true if cancelled or denied or timeout
 			cancel_ack : bool
-			status : int value 	//meaning of different constants to be defined (1 = request sent to database, 2= request received by receiver, 3= request accepted by receiver, 4= drone connected and accepted by receiver, 5 drone flying to receiver, 6 drone arrived near receiver (ie in receiver control), 7 is_landing_at_receiver ,8 drone landed at receiver, 9 drone flying back to sender, 10 drone ready to land at sender's
+			status : int value 	//meaning of different constants to be defined (1 = request sent to database, 2= request received by receiver, 3= request accepted by receiver, 4= drone connected and accepted by receiver, 5 drone flying to receiver, 6 drone arrived near receiver (ie in receiver control), 7 is_landing_at_receiver ,8 drone landed at receiver, 9 drone flying back to sender, 10 drone ready to land at sender's, 11 drone landing at sender's, 12 drone landed at sender's
 			drone_status : int value (list of states as an enum in drone handler)
 			drone_GPS :		//use sender GPS if drone is off ???
 			{
