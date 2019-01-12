@@ -161,7 +161,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
             // Create temp file and try to copy image from intent data
-            imageFile = new File(getExternalFilesDir(null), "profileImage"); // TODO: Does last argument matter?
+            imageFile = new File(getExternalFilesDir(null), "profileImage");
             try {
                 copyImageFromUriToFile(imageUri, imageFile);
             } catch (IOException e) {
@@ -342,7 +342,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 // Finish account creation
 //
                 Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-                //intent.putExtra(MainActivity.USER_ID, userID);
                 intent.putExtra(MainActivity.USER_PROFILE, userProfile);
                 startActivity(intent);
                 finish();

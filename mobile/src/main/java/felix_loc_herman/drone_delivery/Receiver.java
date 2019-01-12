@@ -2,21 +2,26 @@ package felix_loc_herman.drone_delivery;
 
 import java.io.Serializable;
 
-public class Peer implements Serializable {
+public class Receiver implements Serializable {
 
     String username;
     String photoPath;
     Integer timestamp; // TODO: Decide unit
-    boolean isReceiver;
     String senderName;
     GPS gps;
 
-    Peer(String username, String photoPath) {
+    public static final String SENDERDUMMYNAME = "A_SENDER_HAS_NO_NAME";
+
+    Receiver(){
+        this.senderName = SENDERDUMMYNAME;
+        this.gps = new GPS(this.timestamp);
+    }
+
+    Receiver(String username, String photoPath) {
         this.username    = username;
         this.photoPath   = photoPath;
         this.timestamp   = (int) System.currentTimeMillis();
-        this.isReceiver  = true;
-        this.senderName  = "A_SENDER_HAS_NO_NAME";
+        this.senderName  = SENDERDUMMYNAME;
         this.gps = new GPS(this.timestamp);
     }
 

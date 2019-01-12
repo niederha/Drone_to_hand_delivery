@@ -26,8 +26,6 @@
         android:theme="@style/AppTheme">
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
 
-
-
         <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,15 +33,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateFormActivity" />
-        <activity
-            android:name=".MainActivity"
-            android:launchMode="singleInstance" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".EditProfileActivity" />
-        <activity android:name=".WaitingForAcceptationByReceiverActivity" />
-        <activity android:name=".TodoActivity" />
-        <activity android:name=".TakeOffActivity" />
+      
+        <activity android:name=".LoginActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+      
+        <activity android:name=".EditProfileActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+      
+         <activity android:name=".MainActivity"
+            android:launchMode="singleInstance"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".CreateFormActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        
+        <activity android:name=".WaitingForAcceptationByReceiverActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+      
+        <activity android:name=".TodoActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+      
+        <activity android:name=".TakeOffActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -55,7 +74,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <activity
             android:name=".MapActivity">
             <!--android:label="+@string/title_activity_map">-->

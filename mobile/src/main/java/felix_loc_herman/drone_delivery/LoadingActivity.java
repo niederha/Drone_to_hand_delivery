@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public class LoadingActivity extends AppCompatActivity {
 
@@ -15,35 +16,15 @@ public class LoadingActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private String userID = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
     }
 
-    //region Button XML callbacks
-
     public void toMainActivityClicked(View view){
 
-        //region Get user profile
-
-        // Create a pseudo-random user profile for testing purposes and launch activity main
-        // TODO: Get profile from local storage in future, or background-process magic
-
-        userID = "DonaldTrump";
-
-        //endregion
-
-        //region Start Main activity with said user profile
-
-        Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-        // TODO: Fix when main fragments are implemented
-        intent.putExtra(MainReceiverFragment.USER_ID, userID);
-        startActivity(intent);
-
-        //endregion
+        Toast.makeText(this, "Remove this button :)", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -76,9 +57,5 @@ public class LoadingActivity extends AppCompatActivity {
 
     }
 
-
-
-
-    //endregion
 
 }
