@@ -15,6 +15,7 @@ import com.parrot.arsdk.ardiscovery.ARDiscoveryDeviceService;
  * détectés par l'appareil dans une {@link android.widget.ListView}.
  * Cette implémentation affiche le nom du drone ainsi que son identifiant.
  */
+
 public class DeviceListAdapter extends ArrayAdapter<ARDiscoveryDeviceService> {
 
     private final LayoutInflater mInflater;
@@ -24,7 +25,7 @@ public class DeviceListAdapter extends ArrayAdapter<ARDiscoveryDeviceService> {
         mInflater = LayoutInflater.from(context);
     }
 
-    /*@NonNull
+    @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
@@ -42,12 +43,12 @@ public class DeviceListAdapter extends ArrayAdapter<ARDiscoveryDeviceService> {
         }
 
         return convertView;
-    }*/
+    }
 
     /**
      * Pattern ViewHolder permettant d'améliorer les performances de défilement des ListView.
      */
-    /*private static class ViewHolder {
+    private static class ViewHolder {
 
         final TextView deviceName;
         final TextView deviceID;
@@ -56,6 +57,6 @@ public class DeviceListAdapter extends ArrayAdapter<ARDiscoveryDeviceService> {
             deviceName = (TextView) rootView.findViewById(R.id.deviceName);
             deviceID = (TextView) rootView.findViewById(R.id.deviceId);
         }
-    }*/
+    }
 }
 
