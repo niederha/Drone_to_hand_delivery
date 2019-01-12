@@ -70,7 +70,7 @@ public class TakeOffActivity extends AppCompatActivity {
 
     public void activityTakeOff_CancelButton_Clicked(View view) {
         deliveryRef.child("cancelled").setValue(true);  //inform the receiver that we cancelled the delivery  //TODO : check if it threadsafe and correct
-        Toast.makeText(this,"The delivery request has been cancelled successfully",Toast.LENGTH_SHORT);
+        Toast.makeText(this,"The delivery request has been cancelled successfully",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
     }
@@ -101,7 +101,7 @@ public class TakeOffActivity extends AppCompatActivity {
             ETA=dataSnapshot.child("ETA").getValue(Double.class).doubleValue();     //retrieve ETA
             boolean cancelled_by_receiver=dataSnapshot.child("cancelled").getValue(Boolean.class).booleanValue();     //retrieve cancelling status
             if(cancelled_by_receiver) {    //the receiver cancelled the delivery
-                Toast.makeText(context,"Sending cancelled:\nthe receiver don't want to receive the package anyore",Toast.LENGTH_LONG);
+                Toast.makeText(context,"Sending cancelled:\nthe receiver don't want to receive the package anyore",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(context,MainActivity.class);
                 startActivity(intent);
             }

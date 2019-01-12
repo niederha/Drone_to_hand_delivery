@@ -2,10 +2,12 @@ package felix_loc_herman.drone_delivery;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -164,7 +166,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void activityMap_Cancelbutton(View view) {   //note that this button is blocked once the drone started landing at receiver
         deliveryRef.child("cancelled").setValue(true);  //inform the receiver that we cancelled the delivery  //TODO : check if it threadsafe and correct
-        Toast.makeText(this,"The delivery request has been cancelled successfully : the drone is now flying back to you",Toast.LENGTH_SHORT);
+        Toast.makeText(this,"The delivery request has been cancelled successfully : the drone is now flying back to you",Toast.LENGTH_SHORT).show();
         applyStatusChange(DRONE_FLYING_BACK_TO_SENDER);
     }
 
@@ -216,7 +218,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         else if(status==DRONE_NEAR_SENDER)
         {
-            //TODO : ask permission to land : if granted : switch to DRONE_LANDING and call applyStatusChange(DRONE_LANDING_AT_SENDER)
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapActivity.this);
+            alertDialog.setTitle("Drone ready to land");
+            alertDialog.setMessage("Click on LAND to allow the drone to land (if the drone is above a location it can't land, then move to an open area : the drone will follow you)");
+            alertDialog.setPositiveButton("LAND", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i("MapActivity","drone is allowed to land at sender's");
+                    status=DRONE_LANDING_AT_SENDER;
+                    applyStatusChange(DRONE_LANDING_AT_SENDER);
+                }
+            });
+            alertDialog.show();
         }
         else if(status==DRONE_LANDING_AT_SENDER)
         {
@@ -253,7 +265,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             if(new_cancelled_by_receiver && !cancelled_by_receiver) {    //the receiver cancelled the delivery
                 cancelled_by_receiver=true;
-                Toast.makeText(context,"The receiver cancelled the delivery : the drone is now flying back to you",Toast.LENGTH_LONG);
+                Toast.makeText(context,"The receiver cancelled the delivery : the drone is now flying back to you",Toast.LENGTH_LONG).show();
                 applyStatusChange(DRONE_FLYING_BACK_TO_SENDER);
             }
             else if(new_status!=status)
