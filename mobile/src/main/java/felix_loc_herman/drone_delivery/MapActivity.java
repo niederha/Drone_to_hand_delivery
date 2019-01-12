@@ -3,6 +3,7 @@ package felix_loc_herman.drone_delivery;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -71,7 +72,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         cancelled_by_receiver = false;
         status = DRONE_FLYING_TO_RECEIVER;
-        droneStatus = DroneHandler.IDLE; //TODO : or do we start in flying as we already took off?
+        droneStatus = DroneHandler.FLYING; //TODO : or do we start in IDLE?
 
         setContentView(R.layout.activity_map);
 
@@ -238,8 +239,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         else if(status==DRONE_LANDED_AT_SENDER)
         {
-            //TODO : clear delivery data?
-            //TODO : go to main activity or to delivery summary
+            //TODO : modify if we want a summary or a history of delivery(ies)
+            deliveryRef.setValue(null); //delete the delivery structure
+            Intent intent = new Intent(this,MainActivity.class);
+            intent.putExtra("username",sender_username);
+            intent.putExtra("receiver_username",receiver_username);
+            intent.putExtra("droneHandler",droneHandler);
+            startActivity(intent);
+
         }
     }
 
@@ -296,8 +303,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     deliveryRef.child("status").setValue(DRONE_NEAR_SENDER);  //TODO : check if it threadsafe and correct
                     applyStatusChange(DRONE_NEAR_SENDER);
                 }
-                //TODO:order of landing at senders : todo by sender?
-                else if(droneStatus==DroneHandler.LANDED && status==DRONE_LANDING_AT_RECEIVER)  //the drone just landed at sender
+                else if(droneStatus==DroneHandler.LANDED && status==DRONE_LANDING_AT_SENDER)  //the drone just landed at sender
                 {
                     status=DRONE_LANDED_AT_RECEIVER;
                     deliveryRef.child("status").setValue(DRONE_LANDED_AT_RECEIVER);  //TODO : check if it threadsafe and correct
@@ -366,5 +372,4 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
-//TODO : include changes in receiver position
 //TODO : manage timeout of receiver GPS (ie make the drone fly back if no GPS signal received from receiver for more than a given time
