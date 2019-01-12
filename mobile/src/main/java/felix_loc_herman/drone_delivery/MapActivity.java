@@ -1,14 +1,20 @@
 package felix_loc_herman.drone_delivery;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,8 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class MapActivity extends AppCompatActivity implements
-        OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     private DroneHandler droneHandler;
     private String sender_username;
@@ -38,18 +43,20 @@ public class MapActivity extends AppCompatActivity implements
     private double drone_latitude;
     private double receiver_longitude;
     private double receiver_latitude;
+    private double sender_longitude;
+    private double sender_latitude;
     private boolean cancelled_by_receiver;
     private int status;
     private int droneStatus;
 
-    private final int DRONE_FLYING_TO_RECEIVER=5;
-    private final int DRONE_NEAR_RECEIVER=6;
-    private final int DRONE_LANDING_AT_RECEIVER=7;
-    private final int DRONE_LANDED_AT_RECEIVER=8;
-    private final int DRONE_FLYING_BACK_TO_SENDER=9;
-    private final int DRONE_NEAR_SENDER=10;
-    private final int DRONE_LANDING_AT_SENDER=11;
-    private final int DRONE_LANDED_AT_SENDER=12;
+    private final int DRONE_FLYING_TO_RECEIVER = 5;
+    private final int DRONE_NEAR_RECEIVER = 6;
+    private final int DRONE_LANDING_AT_RECEIVER = 7;
+    private final int DRONE_LANDED_AT_RECEIVER = 8;
+    private final int DRONE_FLYING_BACK_TO_SENDER = 9;
+    private final int DRONE_NEAR_SENDER = 10;
+    private final int DRONE_LANDING_AT_SENDER = 11;
+    private final int DRONE_LANDED_AT_SENDER = 12;
 
 
     private final String TAG = this.getClass().getSimpleName();
@@ -60,9 +67,9 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cancelled_by_receiver=false;
-        status=DRONE_FLYING_TO_RECEIVER;
-        droneStatus=DroneHandler.IDLE; //TODO : or do we start in flying as we already took off?
+        cancelled_by_receiver = false;
+        status = DRONE_FLYING_TO_RECEIVER;
+        droneStatus = DroneHandler.IDLE; //TODO : or do we start in flying as we already took off?
 
         setContentView(R.layout.activity_map);
 
@@ -71,12 +78,10 @@ public class MapActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
 
         //get extras from intent
-        Bundle b=getIntent().getExtras();
-        sender_username=b.getString("username");
-        receiver_username=b.getString("receiver_username");
-        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
-
-
+        Bundle b = getIntent().getExtras();
+        sender_username = b.getString("username");
+        receiver_username = b.getString("receiver_username");
+        droneHandler = (DroneHandler) b.getSerializable("droneHandler");
 
 
         //connect to firebase
@@ -90,9 +95,54 @@ public class MapActivity extends AppCompatActivity implements
         receiverGPSRef = userGetRef.child(receiver_username).child("GPS");
         receiverGPSRef.addValueEventListener(new MapActivity.ReceiverGPSUpdateEventListener(this));
 
+        //listen for GPS
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //TODO : handle case when no GPS permission/connection
+
+
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        double new_sender_latitude = location.getLatitude();
+        double new_sender_longitude = location.getLongitude();
 
+        if(sender_latitude!=new_sender_latitude || sender_longitude!=new_sender_longitude)
+        {
+            sender_latitude=new_sender_latitude;
+            sender_longitude=new_sender_longitude;
+            if(status==DRONE_FLYING_BACK_TO_SENDER || status==DRONE_NEAR_SENDER)    //ie the drone is flying towards sender
+            {
+                droneHandler.goTo(sender_latitude,sender_longitude);
+            }
+        }
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void onProviderEnabled(String provider) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // TODO Auto-generated method stub
+
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -161,8 +211,7 @@ public class MapActivity extends AppCompatActivity implements
             TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
             tv_state.setText("Drone flying back to sender");
             droneHandler.takeOff();
-            droneHandler.getBack(); //TODO : replace by goTo?
-            //TODO : check if getBack take into account changes of location of sender
+            droneHandler.goTo(sender_latitude,sender_longitude);
 
         }
         else if(status==DRONE_NEAR_SENDER)
