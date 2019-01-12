@@ -37,16 +37,17 @@ public class TakeOffActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
-        droneHandler=new DroneHandler(getApplicationContext());//TODO : initialize drone handler with the one received as an intent istead
+        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
 
 
         //TODO : if the drone isn't set up yet, lauch the set up activity for return
-        /*while(!droneHandler.isConnected())   //the drone is not connected yet
+       /* while(!droneHandler.isConnectedToDrone())   //the drone is not connected yet
         {
 
-            Intent intent = new Intent(this,TakeOffActivity.class);
+            Intent intent = new Intent(this,ConnectActivity.class);
             intent.putExtra("droneHandler",droneHandler);
             startActivity(intent);
+            //TODO : planify return?
         }*/
         setContentView(R.layout.activity_take_off);
 
@@ -69,7 +70,7 @@ public class TakeOffActivity extends AppCompatActivity {
 
     public void activityTakeOff_CancelButton_Clicked(View view) {
         deliveryRef.child("cancelled").setValue(true);  //inform the receiver that we cancelled the delivery  //TODO : check if it threadsafe and correct
-        Toast.makeText(this,"The delivery request has been cancelled successfully",Toast.LENGTH_SHORT);
+        Toast.makeText(this,"The delivery request has been cancelled successfully",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
     }
@@ -80,10 +81,10 @@ public class TakeOffActivity extends AppCompatActivity {
 
         //TODO : set destination?
 
-        Intent intent = new Intent(this,MapActivity.class);//TODO : change the target activity
+        Intent intent = new Intent(this,MapActivity.class);
         intent.putExtra("username",sender_username);
         intent.putExtra("receiver_username",receiver_username);
-        //intent.putExtra("droneHandler",droneHandler); //TODO : uncomment once the drone handler is serializable
+        intent.putExtra("droneHandler",droneHandler);
         startActivity(intent);
     }
 
@@ -100,7 +101,7 @@ public class TakeOffActivity extends AppCompatActivity {
             ETA=dataSnapshot.child("ETA").getValue(Double.class).doubleValue();     //retrieve ETA
             boolean cancelled_by_receiver=dataSnapshot.child("cancelled").getValue(Boolean.class).booleanValue();     //retrieve cancelling status
             if(cancelled_by_receiver) {    //the receiver cancelled the delivery
-                Toast.makeText(context,"Sending cancelled:\nthe receiver don't want to receive the package anyore",Toast.LENGTH_LONG);
+                Toast.makeText(context,"Sending cancelled:\nthe receiver don't want to receive the package anyore",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(context,MainActivity.class);
                 startActivity(intent);
             }

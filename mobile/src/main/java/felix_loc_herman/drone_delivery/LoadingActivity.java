@@ -42,7 +42,9 @@ public class LoadingActivity extends AppCompatActivity {
         Intent intent = new Intent(LoadingActivity.this, CreateFormActivity.class);
         intent.putExtra("username","fake_sender_username");
         intent.putExtra("receiver_username","fake_receiver_username");
-        LoadingActivity.this.startActivity(intent);
+        DroneHandler droneHandler=new DroneHandler(getApplicationContext());
+        intent.putExtra("droneHandler",droneHandler);
+        startActivity(intent);
 
     }
 
@@ -52,8 +54,10 @@ public class LoadingActivity extends AppCompatActivity {
         Intent intent = new Intent(LoadingActivity.this, MapActivity.class);
         intent.putExtra("username","fake_sender_username");
         intent.putExtra("receiver_username","fake_receiver_username");
+        DroneHandler droneHandler=new DroneHandler(getApplicationContext());
+        intent.putExtra("droneHandler",droneHandler);
         Log.e("LOADING_ACTIVITY","Warning : in order for this button to work properly, the delivery from fake_sender_username to fake_receiver_username has to be already set properly in firebase (otherways you might get errors because things are not initialized properly)");
-        LoadingActivity.this.startActivity(intent);
+        startActivity(intent);
 
     }
 

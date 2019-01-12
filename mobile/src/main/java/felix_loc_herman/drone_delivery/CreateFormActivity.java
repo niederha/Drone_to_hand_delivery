@@ -36,6 +36,7 @@ public class CreateFormActivity extends AppCompatActivity {
     private String itemName;    //name of the item to be sent
     private Float itemQuantity; //number of items to be sent (NaN if not specified)
     private String message;     //mesage sent by the sender to the receiver
+    private DroneHandler droneHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class CreateFormActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
+        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
 
         setContentView(R.layout.activity_create_form);  //display the layout
     }
@@ -114,6 +116,7 @@ public class CreateFormActivity extends AppCompatActivity {
             Intent intent = new Intent(context,WaitingForAcceptationByReceiverActivity.class);
             intent.putExtra("username",sender_username);
             intent.putExtra("receiver_username",receiver_username);
+            intent.putExtra("droneHandler",droneHandler);
             startActivity(intent);
         }
     }
