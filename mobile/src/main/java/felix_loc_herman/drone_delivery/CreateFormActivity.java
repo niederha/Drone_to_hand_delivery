@@ -46,7 +46,7 @@ public class CreateFormActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
-        //droneHandler=(DroneHandler)b.getSerializable("droneHandler"); //TODO : uncomment
+        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
 
         setContentView(R.layout.activity_create_form);  //display the layout
     }
@@ -116,6 +116,7 @@ public class CreateFormActivity extends AppCompatActivity {
             Intent intent = new Intent(context,WaitingForAcceptationByReceiverActivity.class);
             intent.putExtra("username",sender_username);
             intent.putExtra("receiver_username",receiver_username);
+            intent.putExtra("droneHandler",droneHandler);
             startActivity(intent);
         }
     }

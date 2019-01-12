@@ -37,7 +37,7 @@ public class TakeOffActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
-        droneHandler=new DroneHandler(getApplicationContext());//TODO : initialize drone handler with the one received as an intent istead
+        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
 
 
         //TODO : if the drone isn't set up yet, lauch the set up activity for return
@@ -83,7 +83,7 @@ public class TakeOffActivity extends AppCompatActivity {
         Intent intent = new Intent(this,MapActivity.class);//TODO : change the target activity
         intent.putExtra("username",sender_username);
         intent.putExtra("receiver_username",receiver_username);
-        //intent.putExtra("droneHandler",droneHandler); //TODO : uncomment once the drone handler is serializable
+        intent.putExtra("droneHandler",droneHandler);
         startActivity(intent);
     }
 

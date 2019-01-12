@@ -87,7 +87,7 @@ public class MapActivity extends AppCompatActivity implements
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
-        droneHandler=new DroneHandler(getApplicationContext());//TODO : initialize drone handler with the one received as an intent istead
+        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
 
 
 
