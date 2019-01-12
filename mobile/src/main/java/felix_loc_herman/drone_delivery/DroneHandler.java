@@ -25,7 +25,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class DroneHandler implements ARDiscoveryServicesDevicesListUpdatedReceiverDelegate {
+public class DroneHandler implements Serializable {
 
     private ARDiscoveryServicesDevicesListUpdatedReceiver receiver;
     private Context context;
@@ -36,6 +36,11 @@ public class DroneHandler implements ARDiscoveryServicesDevicesListUpdatedReceiv
     }
 
     //region PublicFunctions
+
+    public int getDroneState(){
+        return 0;
+    }
+
     // Get the device list to use
     public int getDeviceList(){
         int mock = 0;
@@ -145,17 +150,6 @@ public class DroneHandler implements ARDiscoveryServicesDevicesListUpdatedReceiv
                 new IntentFilter(ARDiscoveryService.kARDiscoveryServiceNotificationServicesDevicesListUpdated));
     }
 
-    @Override
-    public void onServicesDevicesListUpdated()
-    {
-        Log.d(TAG, "onServicesDevicesListUpdated ...");
-
-        if (mArdiscoveryService != null)
-        {
-            List<ARDiscoveryDeviceService> deviceList = mArdiscoveryService.getDeviceServicesArray();
-            //TODO: Do what you want with the device list
-        }
-    }
 
     private ARDiscoveryDevice createDiscoveryDevice(@NonNull ARDiscoveryDeviceService service) {
         ARDiscoveryDevice device = null;
