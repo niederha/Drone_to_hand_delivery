@@ -30,6 +30,9 @@ public class DroneHandler implements Serializable {
     private ARDiscoveryServicesDevicesListUpdatedReceiver receiver;
     private Context context;
 
+    public enum droneState{
+        IDLE, GOING_TOR_ECIVER, WATINTG_TO_LAND, LANDED_AT_RECIEVER, GOING_BACK
+    }
     public DroneHandler(Context context){
         ARSDK.loadSDKLibs();
         this.context = context;
