@@ -129,8 +129,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 break;
             case R.id.action_validate:
                 if (validateForm()) {
-                    addProfileToFirebase();
-                    // Intent for starting mainActivity @ ProfileDataUploader -> onComplete
+                    uploadIfUsernameVacant();
                 }
                 break;
         }
@@ -279,6 +278,33 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
             //endregion
+        });
+    }
+
+    private void uploadIfUsernameVacant(){
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference(DB_PROFILES);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isTaken = false;
+                for (final DataSnapshot user : dataSnapshot.getChildren()) {
+                    String db_username = user.child(DB_USERNAME).getValue(String.class);
+                    if (userProfile.username.equals(db_username)) {
+                        isTaken = true;
+                        break;
+                    }
+                }
+                if (isTaken)
+                    Toast.makeText(EditProfileActivity.this, R.string.username_taken, Toast.LENGTH_SHORT).show();
+                else
+                    addProfileToFirebase();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 

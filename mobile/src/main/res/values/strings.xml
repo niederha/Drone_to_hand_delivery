@@ -19,6 +19,7 @@
     <string name="registration_failed">Registration failed!</string>
     <string name="missing_picture">Profile picture missing!</string>
     <string name="photo_upload_failed">Photo upload failed!</string>
+    <string name="username_taken">Username taken!</string>
 
     <string name="action_validate_text">Save profile</string>
     <string name="action_clear_text">Clear profile</string>
