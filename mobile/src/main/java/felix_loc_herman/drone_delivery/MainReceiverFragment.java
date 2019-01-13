@@ -1,6 +1,7 @@
 package felix_loc_herman.drone_delivery;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +52,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference peerGetRef = database.getReference(DB_RECEIVER);
     DatabaseReference peerRef;
+    DatabaseReference deliveryRef;
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -195,9 +199,56 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 if (!isOnline) {
                     isOnline = true;
                 } else {
-                    String sendername = dataSnapshot.getValue(String.class);
+                    final String sendername = dataSnapshot.getValue(String.class);
                     if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
                         //TODO: launch activity for the receiver here. everything else taken care of.
+
+                        DatabaseReference deliveryGetRef = database.getReference("deliveries");
+                        deliveryRef = deliveryGetRef.child(sendername);
+                        deliveryRef.child("status").setValue(2);    //2 : REQUEST_RECEIVED_BY_RECEIVER
+
+                        //read delivery information and create dialog to accept or decline delivery
+                        ValueEventListener deliveryListener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String item=dataSnapshot.child("item").getValue(String.class);
+                                double quantity=dataSnapshot.child("quantity").getValue(Double.class).doubleValue();
+                                String description=dataSnapshot.child("description").getValue(String.class);
+
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainReceiverFragment.this.getContext());
+                                alertDialog.setTitle("There is a delivery for you");
+                                alertDialog.setMessage(sendername+" has a delivery for you:\nItem: "+item+"\nQuantity:"+quantity+"\nDescription:\n"+description);
+                                alertDialog.setPositiveButton("ACCEPT", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.i("MainReceiverFragment","delivery accepted");
+                                        deliveryRef.child("status").setValue(3);    //set status to 3=DELIVERY ACCEPTED
+                                        Intent intent = new Intent(MainReceiverFragment.this.getContext(), ReceivingActivity.class);
+                                        intent.putExtra("receiver_name",MainActivity.receiver);
+                                        intent.putExtra("sender_name",sendername);
+                                        startActivity(intent);
+                                    }
+                                });
+                                alertDialog.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.i("MainReceiverFragment","delivery denied");
+                                        deliveryRef.child("cancelled").setValue(true);
+                                    }
+                                });
+                                alertDialog.show();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                // Getting Post failed, log a message
+                                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                                // ...
+                            }
+                        };
+                        deliveryRef.addListenerForSingleValueEvent(deliveryListener);
+
+
+
+
                         //sendername is the name of the sendername
                         //MainActivity.receiver  is the name of the receiver
                         //MainActivity.userProfile.username could also be used
