@@ -95,7 +95,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         deliveryRef = deliveryGetRef.child(sender_username);
         deliveryRef.addValueEventListener(new MapActivity.DeliveryUpdateEventListener(this));
 
-        DatabaseReference userGetRef = database.getReference("user");
+        DatabaseReference userGetRef = database.getReference("receiver");
         receiverGPSRef = userGetRef.child(receiver_username).child("GPS");
         receiverGPSRef.addValueEventListener(new MapActivity.ReceiverGPSUpdateEventListener(this));
 
