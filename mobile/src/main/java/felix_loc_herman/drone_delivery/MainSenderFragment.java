@@ -32,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class MainSenderFragment extends Fragment {
@@ -231,8 +233,20 @@ public class MainSenderFragment extends Fragment {
         }
 
         private String calculateETA(Receiver.GPS gps){
-            //TODO: calculate ETA!
-            return "12:34";
+            Integer eta = DroneHandler.computeETAmin(gps.north, gps.east,
+                                    MainActivity.receiver.gps.north, MainActivity.receiver.gps.east);
+            int hrs = 0, min;
+            while (eta >= 60){
+                hrs++;
+                eta -= 60;
+            }
+            min = eta;
+            if (hrs > 0)
+                return hrs + " h " + min + "min";
+            else if (min > 0)
+                return min + " min";
+            else
+                return "< 1 min";
         }
 
         @NonNull
