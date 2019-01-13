@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -152,16 +153,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         //TODO : initialize with drone and receiver positions (and correct zoom?)
 
+        LatLng droneLocation = new LatLng(drone_latitude,drone_longitude);
+        LatLng receiverLocation = new LatLng(receiver_latitude,receiver_longitude);
+        LatLng senderLocation = new LatLng(sender_latitude,sender_longitude);
 
-        // Lausanne
-        double latitude = 46.5197;
-        double longitude = 6.6323;
+        double margin=0.01;
+        double min_lat=Math.min(Math.min(drone_latitude,sender_latitude),receiver_longitude) - margin;
+        double max_lat=Math.max(Math.max(drone_latitude,sender_latitude),receiver_longitude) + margin;
+        double min_long=Math.min(Math.min(drone_longitude,sender_longitude),receiver_longitude) - margin;
+        double max_long=Math.max(Math.max(drone_longitude,sender_longitude),receiver_longitude) + margin;
+        LatLngBounds boundaries=new LatLngBounds(new LatLng(min_lat,min_long), new LatLng(max_lat,max_long));
 
-        // Add a marker in Sydney and move the camera
-        LatLng currentLocation = new LatLng(latitude, longitude);
-        Log.e(TAG, "Current location: " + currentLocation);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
-        mMap.addMarker(new MarkerOptions().position(currentLocation).title("my marker"));
+        //set position and zoom
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundaries, 0));
+
+        //set markers
+        mMap.addMarker(new MarkerOptions().position(droneLocation).title("drone"));
+        mMap.addMarker(new MarkerOptions().position(receiverLocation).title("receiver"));
+        mMap.addMarker(new MarkerOptions().position(senderLocation).title("sender"));
 
     }
 
@@ -173,15 +182,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void updateMap()
     {
-        //TODO : complete
+        LatLng droneLocation = new LatLng(drone_latitude,drone_longitude);
+        LatLng receiverLocation = new LatLng(receiver_latitude,receiver_longitude);
+        LatLng senderLocation = new LatLng(sender_latitude,sender_longitude);
 
-        // Update map
-        LatLng currentLocation = new LatLng(drone_latitude, drone_longitude);
-        Log.e(TAG, "Current location: " + currentLocation);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+        double margin=0.01;
+        double min_lat=Math.min(Math.min(drone_latitude,sender_latitude),receiver_longitude) - margin;
+        double max_lat=Math.max(Math.max(drone_latitude,sender_latitude),receiver_longitude) + margin;
+        double min_long=Math.min(Math.min(drone_longitude,sender_longitude),receiver_longitude) - margin;
+        double max_long=Math.max(Math.max(drone_longitude,sender_longitude),receiver_longitude) + margin;
+        LatLngBounds boundaries=new LatLngBounds(new LatLng(min_lat,min_long), new LatLng(max_lat,max_long));
+
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(currentLocation)
-                .title("my marker"));
+
+        //set position and zoom
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundaries, 0));
+
+        //set markers
+        mMap.addMarker(new MarkerOptions().position(droneLocation).title("drone"));
+        mMap.addMarker(new MarkerOptions().position(receiverLocation).title("receiver"));
+        mMap.addMarker(new MarkerOptions().position(senderLocation).title("sender"));
     }
 
     private void applyStatusChange(int new_status)
