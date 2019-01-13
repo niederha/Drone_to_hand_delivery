@@ -59,10 +59,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference profileGetRef = database.getReference(DB_PROFILES);
-    private static DatabaseReference profileRef = profileGetRef.push();
+    private DatabaseReference profileRef;
 
     private Profile userProfile;
-    private String userID;
     private String username;
     private String password;
     private Uri savedImageUri;
@@ -76,7 +75,7 @@ public class EditProfileActivity extends AppCompatActivity {
         //region Retrieve data sent from LoginActivity
         Intent intent = getIntent();
         if (intent.hasExtra(MainActivity.USER_PROFILE)) {
-            userID = intent.getExtras().getString(MainActivity.USER_PROFILE);
+            userProfile = (Profile) intent.getSerializableExtra(MainActivity.USER_PROFILE);
             fetchDataFromDatabaseAndSetItemsToView();
         } else {
             if (intent.hasExtra(TYPED_USERNAME)) {
@@ -251,7 +250,7 @@ public class EditProfileActivity extends AppCompatActivity {
         final ImageView imageVew = findViewById(R.id.userImage);
         //endregion
 
-        profileGetRef.child(userID).addValueEventListener(new ValueEventListener() {
+        profileGetRef.child(userProfile.username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String db_username = dataSnapshot.child(DB_USERNAME).getValue(String.class);
@@ -281,8 +280,6 @@ public class EditProfileActivity extends AppCompatActivity {
             }
             //endregion
         });
-
-        profileRef = profileGetRef.child(userID);
     }
 
     //region Upload functions
@@ -299,6 +296,7 @@ public class EditProfileActivity extends AppCompatActivity {
         byte[] data = byteArrayOutputStream.toByteArray();
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        profileRef = profileGetRef.child(userProfile.username);
         StorageReference photoReference = storageReference.child(DB_PHOTOS).child(profileRef.getKey() + ".jpg");
 
         UploadTask uploadTask = photoReference.putBytes(data);

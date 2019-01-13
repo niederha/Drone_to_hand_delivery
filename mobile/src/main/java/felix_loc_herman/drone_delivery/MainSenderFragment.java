@@ -32,8 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.HashMap;
-
 public class MainSenderFragment extends Fragment {
 
     public static final String USER_PROFILE = "USER_PROFILE";
@@ -63,7 +61,6 @@ public class MainSenderFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View fragmentView;
 
-    private HashMap<String,String> keyMap;
 
     private ListView listView;
     private ReceiverAdapter receiverAdapter;
@@ -72,7 +69,6 @@ public class MainSenderFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        keyMap = new HashMap<String, String>();
         super.onCreate(savedInstanceState);
     }
 
@@ -116,12 +112,11 @@ public class MainSenderFragment extends Fragment {
 
         setLED(MainActivity.LED_COLOR.YELLOW);
 
-        final String receiverKey = keyMap.get(receivername);
         final Receiver receiver = new Receiver();
 
         final FirebaseDatabase firebaseDatabaseUp = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReferenceUp = firebaseDatabaseUp.getReference(DB_RECEIVER);
-        databaseReferenceUp.child(receiverKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReferenceUp.child(receivername).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 receiver.username = dataSnapshot.child(DB_USERNAME).getValue(String.class);
@@ -132,7 +127,7 @@ public class MainSenderFragment extends Fragment {
                 receiver.gps.east = dataSnapshot.child(DB_GPS).child(DB_EAST).getValue(Double.class);
                 receiver.gps.time_last_update = dataSnapshot.child(DB_GPS).child(DB_GPSTIME).getValue(Integer.class);
 
-                databaseReferenceUp.child(receiverKey).runTransaction(new Transaction.Handler() {
+                databaseReferenceUp.child(receivername).runTransaction(new Transaction.Handler() {
                     @NonNull
                     @Override
                     public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
@@ -266,9 +261,7 @@ public class MainSenderFragment extends Fragment {
             //region Set profile picture
             String photoPath = getItem(position).photoPath;
 
-            StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(
-                photoPath
-            );
+            StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(photoPath);
             storageReference.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
@@ -304,7 +297,6 @@ public class MainSenderFragment extends Fragment {
                 receiver.gps.east = rec.child(DB_GPS).child(DB_EAST).getValue(Double.class);
                 receiver.gps.time_last_update = rec.child(DB_GPS).child(DB_GPSTIME).getValue(Integer.class);
 
-                keyMap.put(receiver.username, rec.getKey());
                 receiverAdapter.add(receiver);
             }
             setLED(MainActivity.LED_COLOR.GREEN);
