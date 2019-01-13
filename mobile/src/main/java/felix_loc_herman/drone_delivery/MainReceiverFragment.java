@@ -196,8 +196,14 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                     isOnline = true;
                 } else {
                     String sendername = dataSnapshot.getValue(String.class);
-                    if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) //TODO: activity launch goes here!
+                    if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
+                        //TODO: launch activity for the receiver here. everything else taken care of.
+                        //sendername is the name of the sendername
+                        //MainActivity.receiver  is the name of the receiver
+                        //MainActivity.userProfile.username could also be used
                         Toast.makeText(getContext(), sendername + " connected!", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
 
