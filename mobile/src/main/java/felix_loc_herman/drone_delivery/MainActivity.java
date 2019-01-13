@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity implements
     private final String TAG = this.getClass().getSimpleName();
 
     public static final String USER_PROFILE = "USER_PROFILE";
-    public static final String USER_ID = "USER_ID";
+    public static final String USERNAME = "USERNAME";
 
     public static Profile userProfile;
     public static Receiver receiver;

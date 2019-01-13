@@ -59,10 +59,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference profileGetRef = database.getReference(DB_PROFILES);
-    private static DatabaseReference profileRef = profileGetRef.push();
+    private DatabaseReference profileRef;
 
     private Profile userProfile;
-    private String userID;
     private String username;
     private String password;
     private Uri savedImageUri;
@@ -76,7 +75,7 @@ public class EditProfileActivity extends AppCompatActivity {
         //region Retrieve data sent from LoginActivity
         Intent intent = getIntent();
         if (intent.hasExtra(MainActivity.USER_PROFILE)) {
-            userID = intent.getExtras().getString(MainActivity.USER_PROFILE);
+            userProfile = (Profile) intent.getSerializableExtra(MainActivity.USER_PROFILE);
             fetchDataFromDatabaseAndSetItemsToView();
         } else {
             if (intent.hasExtra(TYPED_USERNAME)) {
@@ -130,8 +129,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 break;
             case R.id.action_validate:
                 if (validateForm()) {
-                    addProfileToFirebase();
-                    // Intent for starting mainActivity @ ProfileDataUploader -> onComplete
+                    uploadIfUsernameVacant();
                 }
                 break;
         }
@@ -251,7 +249,7 @@ public class EditProfileActivity extends AppCompatActivity {
         final ImageView imageVew = findViewById(R.id.userImage);
         //endregion
 
-        profileGetRef.child(userID).addValueEventListener(new ValueEventListener() {
+        profileGetRef.child(userProfile.username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String db_username = dataSnapshot.child(DB_USERNAME).getValue(String.class);
@@ -281,8 +279,33 @@ public class EditProfileActivity extends AppCompatActivity {
             }
             //endregion
         });
+    }
 
-        profileRef = profileGetRef.child(userID);
+    private void uploadIfUsernameVacant(){
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference(DB_PROFILES);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isTaken = false;
+                for (final DataSnapshot user : dataSnapshot.getChildren()) {
+                    String db_username = user.child(DB_USERNAME).getValue(String.class);
+                    if (userProfile.username.equals(db_username)) {
+                        isTaken = true;
+                        break;
+                    }
+                }
+                if (isTaken)
+                    Toast.makeText(EditProfileActivity.this, R.string.username_taken, Toast.LENGTH_SHORT).show();
+                else
+                    addProfileToFirebase();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     //region Upload functions
@@ -299,6 +322,7 @@ public class EditProfileActivity extends AppCompatActivity {
         byte[] data = byteArrayOutputStream.toByteArray();
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        profileRef = profileGetRef.child(userProfile.username);
         StorageReference photoReference = storageReference.child(DB_PHOTOS).child(profileRef.getKey() + ".jpg");
 
         UploadTask uploadTask = photoReference.putBytes(data);

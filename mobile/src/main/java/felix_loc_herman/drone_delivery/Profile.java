@@ -16,6 +16,10 @@ public class Profile implements Serializable {
         this.photoPath = photoPath;
     }
 
+    Profile(String username){
+        this.username = username;
+    }
+
     public void setPassword(String password) {
         this.password = md5(password);
     }

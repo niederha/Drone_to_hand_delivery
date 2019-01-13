@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     //endregion
 
     private Profile userProfile = null;
-    private String userID;
+    private String username;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                     String db_username = user.child(DB_USERNAME).getValue(String.class);
                     String db_password = user.child(DB_PASSWORD).getValue(String.class);
                     if (usernameInput.equals(db_username) && passwordInput.equals(db_password)) {
-                        userID = user.getKey();
+                        username = db_username;
                         notMember = false;
                         break;
                     }
@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                     loginMessageTextView.setTextColor(Color.RED);
                 } else {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra(MainActivity.USER_ID, userID);
+                    intent.putExtra(MainActivity.USERNAME, username);
                     startActivity(intent);
                 }
             }

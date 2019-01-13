@@ -48,14 +48,13 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference peerGetRef = database.getReference(DB_RECEIVER);
-    final DatabaseReference peerRef = peerGetRef.push();
+    DatabaseReference peerRef;
 
     private final String TAG = this.getClass().getSimpleName();
 
     private OnFragmentInteractionListener mListener;
     //private Profile userProfile;
     private View fragmentView;
-    private String userID;
     private boolean isInitialized = false;
     private boolean isOnline = false;
     public Switch connectedSwitch = null;
@@ -78,16 +77,12 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 container, false);
 
         Intent intent = getActivity().getIntent();
-        if (intent.hasExtra(MainActivity.USER_ID)){
-            userID = intent.getExtras().getString(USER_ID);
+        if (intent.hasExtra(MainActivity.USERNAME)){
+            MainActivity.userProfile = new Profile(intent.getExtras().getString(MainActivity.USERNAME));
             getUserProfileFromDB();
 
         } else {
             MainActivity.userProfile = (Profile) intent.getSerializableExtra(USER_PROFILE);
-//            //region Set username to headline
-//            TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-//            textView.setText(MainActivity.userProfile.username);
-//            //endregion
 
             isInitialized = true;
         }
@@ -138,7 +133,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     private void getUserProfileFromDB() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference(DB_PROFILES);
-        databaseReference.child(userID).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(MainActivity.userProfile.username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String db_username = dataSnapshot.child(DB_USERNAME).getValue(String.class);
@@ -146,11 +141,6 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 String db_photopath = dataSnapshot.child(DB_PHOTOPATH).getValue(String.class);
 
                 MainActivity.userProfile = new Profile(db_username, db_password, db_photopath);
-
-//                //region Set username as headline
-//                TextView textView = fragmentView.findViewById(R.id.mainReceiverHeadline);
-//                textView.setText(MainActivity.userProfile.username);
-//                //endregion
 
                 isInitialized = true;
             }
@@ -175,7 +165,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
         // Set online LED to busy
         setLED(MainActivity.LED_COLOR.YELLOW);
-
+        peerRef = peerGetRef.child(MainActivity.receiver.username);
         peerRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
@@ -206,8 +196,14 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                     isOnline = true;
                 } else {
                     String sendername = dataSnapshot.getValue(String.class);
-                    if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) //TODO: activity launch goes here!
+                    if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
+                        //TODO: launch activity for the receiver here. everything else taken care of.
+                        //sendername is the name of the sendername
+                        //MainActivity.receiver  is the name of the receiver
+                        //MainActivity.userProfile.username could also be used
                         Toast.makeText(getContext(), sendername + " connected!", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
 
