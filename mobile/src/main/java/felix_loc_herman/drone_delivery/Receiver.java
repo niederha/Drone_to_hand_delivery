@@ -26,7 +26,7 @@ public class Receiver implements Serializable {
     }
 
 
-    public class GPS {
+    public static class GPS {
         Double north;
         Double east;
         Integer time_last_update;
@@ -35,6 +35,12 @@ public class Receiver implements Serializable {
             north = 0.0;
             east  = 0.0;
             time_last_update = initTime;
+        }
+
+        GPS(double north, double east) {
+            this.north = north;
+            this.east = east;
+            this.time_last_update = (int) System.currentTimeMillis();
         }
     }
 

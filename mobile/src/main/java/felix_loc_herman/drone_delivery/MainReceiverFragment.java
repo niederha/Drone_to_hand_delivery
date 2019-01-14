@@ -1,13 +1,19 @@
 package felix_loc_herman.drone_delivery;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -157,13 +163,52 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     }
 
     private void initPeerToPeerList(){
-        MainActivity.receiver = new Receiver(MainActivity.userProfile.username,
-                                             MainActivity.userProfile.photoPath);
-        //TODO: get GPS and update it
-        //MainActivity.receiver.gps = new Receiver.GPS()
-        uploadPeerToPeerList(MainActivity.receiver);
 
+        //TODO: fix GPS - does not work :/
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // missing permissions to gps
+            Toast.makeText(getContext(),"Failed to enable GPS!", Toast.LENGTH_SHORT).show();
+            connectedSwitch.setChecked(false);
+
+        } else {
+            MainActivity.receiver = new Receiver(MainActivity.userProfile.username,
+                                                 MainActivity.userProfile.photoPath);
+
+            LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+            LocationListener locationListener = new LocationListener()
+            {
+                //region unused function overrides
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                }
+                //endregion
+
+                @Override
+                public void onLocationChanged(Location location) {
+                    // TODO: decide where to get the time from
+                    //MainActivity.receiver.gps.north = location.getLatitude();
+                    //MainActivity.receiver.gps.east = location.getLongitude();
+                    //MainActivity.receiver.gps.time_last_update = location.getTime();
+                    MainActivity.receiver.gps = new Receiver.GPS(location.getLatitude(), location.getLongitude());
+                    uploadPeerToPeerList(MainActivity.receiver);
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        }
     }
+
 
     private void uploadPeerToPeerList(final Receiver receiver){
 

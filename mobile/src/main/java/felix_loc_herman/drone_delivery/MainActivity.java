@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements
 
         // set default tab
         viewPager.setCurrentItem(sectionsStatePagerAdapter.getPositionByTitle(getString(R.string.tab_title_receiver)));
-
         //endregion
 
     }
