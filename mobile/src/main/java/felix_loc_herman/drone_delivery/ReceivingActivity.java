@@ -113,6 +113,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //TODO : handle case when no GPS permission/connection
 
+            Log.e("ReceivingActivity","Problem with GPS connection");
 
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -122,6 +123,11 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             return;
+        }
+        else
+        {
+
+            Log.e("ReceivingActivity","GPS connection : OK");
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
