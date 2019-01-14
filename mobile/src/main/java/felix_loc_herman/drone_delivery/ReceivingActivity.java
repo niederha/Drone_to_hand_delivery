@@ -139,7 +139,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
             {
                 receiverGPSRef.child("north").setValue(receiver_latitude);
                 receiverGPSRef.child("east").setValue(receiver_longitude);
-                receiverGPSRef.child("gpstime").setValue((int) (System.currentTimeMillis() / 1000L));
+              //  receiverGPSRef.child("gpstime").setValue((int) (System.currentTimeMillis() / 1000L));
             }
             updateMap();
         }

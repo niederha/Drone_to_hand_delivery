@@ -46,7 +46,7 @@ public class CreateFormActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
-        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
+        DroneHandler droneHandler=new DroneHandler(getApplicationContext());    //TODO : remove
 
         setContentView(R.layout.activity_create_form);  //display the layout
     }
