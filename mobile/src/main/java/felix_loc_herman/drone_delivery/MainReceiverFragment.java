@@ -169,7 +169,11 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+            int TAG_CODE_PERMISSION_LOCATION=42;
+            ActivityCompat.requestPermissions(this.getActivity(), new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION },
+                    TAG_CODE_PERMISSION_LOCATION);
             // missing permissions to gps
             Toast.makeText(getContext(),"Failed to enable GPS!", Toast.LENGTH_SHORT).show();
             connectedSwitch.setChecked(false);
@@ -197,6 +201,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
                 @Override
                 public void onLocationChanged(Location location) {
+                    Log.e("MainReceiverFragment","GPS location received");
+                    Log.e("MainReceiverFragment", "lat="+location.getLatitude()+" long="+location.getLongitude());
                     // TODO: decide where to get the time from
                     //MainActivity.receiver.gps.north = location.getLatitude();
                     //MainActivity.receiver.gps.east = location.getLongitude();
