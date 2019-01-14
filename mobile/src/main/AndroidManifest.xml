@@ -9,9 +9,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.location.gps" />
-    <uses-feature android:name="android.hardware.location.network"/>
+    <uses-feature android:name="android.hardware.location.network" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <meta-data android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"/>
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use

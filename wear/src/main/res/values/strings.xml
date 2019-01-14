@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">drone_delivery</string>
+    <string name="app_name">Drone Delivery</string>
+    <string name="time">Time</string>
+    <string name="eta">ETA</string>
 </resources>
