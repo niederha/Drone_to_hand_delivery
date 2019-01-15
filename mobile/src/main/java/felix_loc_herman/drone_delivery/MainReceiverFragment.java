@@ -254,8 +254,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                     if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
                         //TODO: launch activity for the receiver here. everything else taken care of.
 
-                        //DatabaseReference deliveryGetRef = database.getReference("deliveries");
-                        //deliveryRef = deliveryGetRef.child(sendername);
+                        DatabaseReference deliveryGetRef = database.getReference("deliveries");
+                        deliveryRef = deliveryGetRef.child(sendername);
                         //deliveryRef.child("status").setValue(2);    //2 : REQUEST_RECEIVED_BY_RECEIVER
 
                         //read delivery information and create dialog to accept or decline delivery
@@ -272,8 +272,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                                 alertDialog.setPositiveButton("ACCEPT", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Log.i("MainReceiverFragment","delivery accepted");
-                                        DatabaseReference deliveryGetRef = database.getReference("deliveries");
-                                        deliveryRef = deliveryGetRef.child(sendername);
+                                        //DatabaseReference deliveryGetRef = database.getReference("deliveries");
+                                        //deliveryRef = deliveryGetRef.child(sendername);
                                         deliveryRef.child("status").setValue(3);    //set status to 3=DELIVERY ACCEPTED
                                         Intent intent = new Intent(MainReceiverFragment.this.getContext(), ReceivingActivity.class);
                                         intent.putExtra("receiver_name",MainActivity.receiver);
@@ -284,8 +284,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                                 alertDialog.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Log.i("MainReceiverFragment","delivery denied");
-                                        DatabaseReference deliveryGetRef = database.getReference("deliveries");
-                                        deliveryRef = deliveryGetRef.child(sendername);
+                                        //DatabaseReference deliveryGetRef = database.getReference("deliveries");
+                                        //deliveryRef = deliveryGetRef.child(sendername);
                                         deliveryRef.child("cancelled").setValue(true);
                                     }
                                 });
