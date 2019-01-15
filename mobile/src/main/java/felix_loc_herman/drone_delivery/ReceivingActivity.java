@@ -92,8 +92,8 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
 
         //get extras from intent
         Bundle b = getIntent().getExtras();
-        sender_username = b.getString("username");
-        receiver_username = b.getString("receiver_username");
+        sender_username = b.getString("sender_name");
+        receiver_username = b.getString("receiver_name");
        // droneHandler = (DroneHandler) b.getSerializable("droneHandler");
 
 

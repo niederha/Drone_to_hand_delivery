@@ -52,7 +52,7 @@ public class LoadingActivity extends AppCompatActivity {
         Log.v(TAG, "To RecevingActivity Activity button clicked");
 
         Intent intent = new Intent(LoadingActivity.this, ReceivingActivity.class);
-        intent.putExtra("username","Shrek");
+        intent.putExtra("sender_name","Shrek");
         intent.putExtra("receiver_username","felix");
         DroneHandler droneHandler=new DroneHandler(getApplicationContext());
         intent.putExtra("droneHandler",droneHandler);
