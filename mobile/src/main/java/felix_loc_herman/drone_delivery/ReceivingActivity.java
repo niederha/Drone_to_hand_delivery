@@ -259,7 +259,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
             case DRONE_FLYING_BACK_TO_SENDER:
                 Intent intent = new Intent(ReceivingActivity.this, MainActivity.class);
                 intent.putExtra("username", receiver_username);
-                intent.putExtra("sender_username", sender_username);
+                intent.putExtra(MainActivity.USERNAME, receiver_username);
                 startActivity(intent);
                 //TODO : delete delivery structure?
                 break;
@@ -271,6 +271,12 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        deliveryRef.onDisconnect();
+        receiverGPSRef.onDisconnect();
+    }
 
     private class DeliveryUpdateEventListener implements ValueEventListener {         //listener to listen to changes in firebase
         private Context context;
