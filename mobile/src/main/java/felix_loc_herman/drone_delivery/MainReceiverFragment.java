@@ -262,34 +262,41 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                         ValueEventListener deliveryListener = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                String item=dataSnapshot.child("item").getValue(String.class);
-                                double quantity=dataSnapshot.child("quantity").getValue(Double.class).doubleValue();
-                                String description=dataSnapshot.child("description").getValue(String.class);
+                               // if(dataSnapshot.child("item").exists() && dataSnapshot.child("item").exists()) {
+                                if(dataSnapshot.getValue()!=null) {
+                                    String item = dataSnapshot.child("item").getValue(String.class);
+                                    double quantity = dataSnapshot.child("quantity").getValue(Double.class).doubleValue();
+                                    String description = dataSnapshot.child("description").getValue(String.class);
 
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainReceiverFragment.this.getContext());
-                                alertDialog.setTitle("There is a delivery for you");
-                                alertDialog.setMessage(sendername+" has a delivery for you:\nItem: "+item+"\nQuantity:"+quantity+"\nDescription:\n"+description);
-                                alertDialog.setPositiveButton("ACCEPT", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Log.i("MainReceiverFragment","delivery accepted");
-                                        //DatabaseReference deliveryGetRef = database.getReference("deliveries");
-                                        //deliveryRef = deliveryGetRef.child(sendername);
-                                        deliveryRef.child("status").setValue(3);    //set status to 3=DELIVERY ACCEPTED
-                                        Intent intent = new Intent(MainReceiverFragment.this.getContext(), ReceivingActivity.class);
-                                        intent.putExtra("receiver_name",MainActivity.receiver);
-                                        intent.putExtra("sender_name",sendername);
-                                        startActivity(intent);
-                                    }
-                                });
-                                alertDialog.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Log.i("MainReceiverFragment","delivery denied");
-                                        //DatabaseReference deliveryGetRef = database.getReference("deliveries");
-                                        //deliveryRef = deliveryGetRef.child(sendername);
-                                        deliveryRef.child("cancelled").setValue(true);
-                                    }
-                                });
-                                alertDialog.show();
+                                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainReceiverFragment.this.getContext());
+                                    alertDialog.setTitle("There is a delivery for you");
+                                    alertDialog.setMessage(sendername + " has a delivery for you:\nItem: " + item + "\nQuantity:" + quantity + "\nDescription:\n" + description);
+                                    alertDialog.setPositiveButton("ACCEPT", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Log.i("MainReceiverFragment", "delivery accepted");
+                                            //DatabaseReference deliveryGetRef = database.getReference("deliveries");
+                                            //deliveryRef = deliveryGetRef.child(sendername);
+                                            deliveryRef.child("status").setValue(3);    //set status to 3=DELIVERY ACCEPTED
+                                            Intent intent = new Intent(MainReceiverFragment.this.getContext(), ReceivingActivity.class);
+                                            intent.putExtra("receiver_name", MainActivity.receiver.username);
+                                            intent.putExtra("sender_name", sendername);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                    alertDialog.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Log.i("MainReceiverFragment", "delivery denied");
+                                            //DatabaseReference deliveryGetRef = database.getReference("deliveries");
+                                            //deliveryRef = deliveryGetRef.child(sendername);
+                                            deliveryRef.child("cancelled").setValue(true);
+                                        }
+                                    });
+                                    alertDialog.show();
+                                }
+                                else
+                                {
+                                    Log.i("MainReceiverFragment","not ready yet");
+                                }
                             }
 
                             @Override
@@ -299,7 +306,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                                 // ...
                             }
                         };
-                        deliveryRef.addListenerForSingleValueEvent(deliveryListener);
+                        deliveryRef.addValueEventListener(deliveryListener);
+                       // deliveryRef.addListenerForSingleValueEvent(deliveryListener);
 
 
 
