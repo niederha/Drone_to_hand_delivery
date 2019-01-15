@@ -230,7 +230,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i("ReceivingActivity", "drone is allowed to land at receiver's");
                         deliveryRef.child("status").setValue(DRONE_LANDING_AT_RECEIVER);
-                        applyStatusChange(DRONE_LANDING_AT_SENDER);
+                        //applyStatusChange(DRONE_LANDING_AT_SENDER);   //already done through feedback from firebase
                     }
                 });
                 alertDialog.setNegativeButton("CANCEL Delivery", new DialogInterface.OnClickListener() {
