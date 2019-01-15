@@ -61,6 +61,14 @@
             android:text="To create form" />
 
         <Button
+            android:id="@+id/toReceivingActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="toRecevingActivityClicked"
+            android:text="To receivingAct" />
+
+        <Button
             android:id="@+id/toMapActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

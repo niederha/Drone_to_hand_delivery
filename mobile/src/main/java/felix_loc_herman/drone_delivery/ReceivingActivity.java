@@ -87,7 +87,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.activity_receiving);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.GoogleMap);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.GoogleReceiving);
         mapFragment.getMapAsync(this);
 
         //get extras from intent

@@ -266,7 +266,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                                 if(dataSnapshot.getValue()!=null) {
                                     String item = dataSnapshot.child("item").getValue(String.class);
                                     double quantity = dataSnapshot.child("quantity").getValue(Double.class).doubleValue();
-                                    String description = dataSnapshot.child("description").getValue(String.class);
+                                    String description = dataSnapshot.child("message_to_receiver").getValue(String.class);
 
                                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainReceiverFragment.this.getContext());
                                     alertDialog.setTitle("There is a delivery for you");

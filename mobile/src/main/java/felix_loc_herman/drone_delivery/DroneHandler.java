@@ -87,7 +87,7 @@ public class DroneHandler implements Serializable {
     }
 
     // Return the current ETA
-    public double getETAmin(){
+    public static double getETAmin(){
         return 1;
     }
 
