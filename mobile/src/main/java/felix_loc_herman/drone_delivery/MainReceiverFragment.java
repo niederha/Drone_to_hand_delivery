@@ -129,6 +129,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isInitialized){
             if (isChecked) {
+                setLED(MainActivity.LED_COLOR.YELLOW);
                 initPeerToPeerList();
             } else {
                 disconnectPeer();
@@ -254,7 +255,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                     if (sendername != null && !sendername.equals(MainActivity.receiver.SENDERDUMMYNAME)) {
                         //TODO: launch activity for the receiver here. everything else taken care of.
 
-                        DatabaseReference deliveryGetRef = database.getReference("deliveries");
+                        final DatabaseReference deliveryGetRef = database.getReference("deliveries");
                         deliveryRef = deliveryGetRef.child(sendername);
                         //deliveryRef.child("status").setValue(2);    //2 : REQUEST_RECEIVED_BY_RECEIVER
 
@@ -277,6 +278,10 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                                             //DatabaseReference deliveryGetRef = database.getReference("deliveries");
                                             //deliveryRef = deliveryGetRef.child(sendername);
                                             deliveryRef.child("status").setValue(3);    //set status to 3=DELIVERY ACCEPTED
+
+                                            disconnectPeer();
+                                            deliveryGetRef.onDisconnect();
+
                                             Intent intent = new Intent(MainReceiverFragment.this.getContext(), ReceivingActivity.class);
                                             intent.putExtra("receiver_name", MainActivity.receiver.username);
                                             intent.putExtra("sender_name", sendername);
@@ -368,6 +373,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        disconnectPeer();
     }
 
     public interface OnFragmentInteractionListener {
