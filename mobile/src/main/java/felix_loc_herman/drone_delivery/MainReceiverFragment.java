@@ -164,7 +164,6 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
     private void initPeerToPeerList(){
 
-        //TODO: fix GPS - does not work :/
         if (ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(),
@@ -211,7 +210,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                     uploadPeerToPeerList(MainActivity.receiver);
                 }
             };
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);    //limit update to once every 5 seconds
+            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);    //limit update to once every 5 seconds
         }
     }
 
