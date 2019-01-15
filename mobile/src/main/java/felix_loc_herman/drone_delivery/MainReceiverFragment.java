@@ -322,8 +322,10 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
 
     public void disconnectPeer(){
         setLED(MainActivity.LED_COLOR.YELLOW);
-        if (isOnline)
+        if (isOnline) {
             peerRef.removeValue();  //TODO : this line makes the app crash : should be replaced by something working
+            isOnline = false;
+        }
     }
 
     //region Fragment stuff
