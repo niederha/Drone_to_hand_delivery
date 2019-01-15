@@ -159,7 +159,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         LatLng droneLocation = new LatLng(drone_latitude,drone_longitude);
         LatLng receiverLocation = new LatLng(receiver_latitude,receiver_longitude);
 
-        double margin=0.01;
+        /*double margin=0.01;
         double min_lat=Math.min(drone_latitude,receiver_longitude) - margin;
         double max_lat=Math.max(drone_latitude,receiver_longitude) + margin;
         double min_long=Math.min(drone_longitude,receiver_longitude) - margin;
@@ -171,7 +171,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
 
         //set markers
         mMap.addMarker(new MarkerOptions().position(droneLocation).title("drone"));
-        mMap.addMarker(new MarkerOptions().position(receiverLocation).title("you"));
+        mMap.addMarker(new MarkerOptions().position(receiverLocation).title("you"));*/
 
     }
 
