@@ -148,7 +148,7 @@ public class MainSenderFragment extends Fragment {
                         setLED(MainActivity.LED_COLOR.GREEN);
                         Intent intent = new Intent(MainSenderFragment.this.getContext(), CreateFormActivity.class);
                         intent.putExtra("username",MainActivity.userProfile.username);
-                        intent.putExtra("receiver_username","receivername");
+                        intent.putExtra("receiver_username",receivername);
                         startActivity(intent);
                         //TODO: launch new activity for the sender. receiver is taken care of
                         //receivername

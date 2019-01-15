@@ -32,6 +32,8 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
     private static final int REQUEST_RECEIVED_BY_RECEIVER = 2;
     private static final int REQUEST_ACCEPTED_BY_RECEIVER = 3;
 
+    private DroneHandler droneHandler;
+
     private String sender_username;
     private String receiver_username;
     private int status;
@@ -46,6 +48,7 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
+        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
 
         status=REQUEST_SENT_TO_DATABASE;
 
@@ -98,6 +101,7 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
                 //TODO : add drone handler as extra
                 intent.putExtra("username",sender_username);
                 intent.putExtra("receiver_username",receiver_username);
+                intent.putExtra("droneHandler",droneHandler);
                 startActivity(intent);
             }
         }
