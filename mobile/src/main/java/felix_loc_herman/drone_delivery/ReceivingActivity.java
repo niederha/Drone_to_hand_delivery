@@ -53,6 +53,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
     private String sender_username;
     private String receiver_username;
     private DatabaseReference deliveryRef;
+    private DatabaseReference receiverRef;
     private DatabaseReference receiverGPSRef;
     private double distance;
     private double ETA;
@@ -105,7 +106,8 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         deliveryRef.addValueEventListener(new ReceivingActivity.DeliveryUpdateEventListener(this));
 
         DatabaseReference userGetRef = database.getReference("receiver");
-        receiverGPSRef = userGetRef.child(receiver_username).child("GPS");
+        receiverRef = userGetRef.child(receiver_username);
+        receiverGPSRef = receiverRef.child("GPS");
 
 
         //listen for GPS
@@ -215,7 +217,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         mMap.addMarker(new MarkerOptions().position(receiverLocation).title("you"));
     }
 
-    private void applyStatusChange(int new_status) {
+    private void applyStatusChange(final int new_status) {
         TextView tv_state = (TextView) findViewById(R.id.activtyReceiving_state_textView);
 
         switch (status) {
@@ -230,7 +232,8 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i("ReceivingActivity", "drone is allowed to land at receiver's");
                         deliveryRef.child("status").setValue(DRONE_LANDING_AT_RECEIVER);
-                        //applyStatusChange(DRONE_LANDING_AT_SENDER);   //already done through feedback from firebase
+                        status=DRONE_LANDING_AT_SENDER;
+                        applyStatusChange(DRONE_LANDING_AT_SENDER);   //already done through feedback from firebase
                     }
                 });
                 alertDialog.setNegativeButton("CANCEL Delivery", new DialogInterface.OnClickListener() {
@@ -251,15 +254,20 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i("ReceivingActivity", "drone unloaded and allowed to take off again");
                         deliveryRef.child("status").setValue(DRONE_FLYING_BACK_TO_SENDER);
+                        status=new_status;
                         applyStatusChange(DRONE_FLYING_BACK_TO_SENDER);
                     }
                 });
                 alertDialog2.show();
                 break;
             case DRONE_FLYING_BACK_TO_SENDER:
+
+                receiverRef.setValue(null); //delete receiver
+
                 Intent intent = new Intent(ReceivingActivity.this, MainActivity.class);
                 intent.putExtra(MainActivity.USERNAME, receiver_username);
                 startActivity(intent);
+
                 //TODO : delete delivery structure?
                 break;
             case DRONE_NEAR_SENDER:
