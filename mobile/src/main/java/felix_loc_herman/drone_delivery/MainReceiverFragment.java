@@ -174,45 +174,45 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                             Manifest.permission.ACCESS_COARSE_LOCATION },
                     TAG_CODE_PERMISSION_LOCATION);
             // missing permissions to gps
-            Toast.makeText(getContext(),"Failed to enable GPS!", Toast.LENGTH_SHORT).show();
-            connectedSwitch.setChecked(false);
+            //Toast.makeText(getContext(),"Failed to enable GPS!", Toast.LENGTH_SHORT).show();
+            //connectedSwitch.setChecked(false);
 
-        } else {
-            MainActivity.receiver = new Receiver(MainActivity.userProfile.username,
-                                                 MainActivity.userProfile.photoPath);
-
-            LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-            LocationListener locationListener = new LocationListener()
-            {
-                //region unused function overrides
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-                }
-                //endregion
-
-                @Override
-                public void onLocationChanged(Location location) {
-                    Log.e("MainReceiverFragment","GPS location received");
-                    Log.e("MainReceiverFragment", "lat="+location.getLatitude()+" long="+location.getLongitude());
-                    // TODO: decide where to get the time from
-                    //MainActivity.receiver.gps.north = location.getLatitude();
-                    //MainActivity.receiver.gps.east = location.getLongitude();
-                    //MainActivity.receiver.gps.time_last_update = location.getTime();
-                    MainActivity.receiver.gps = new Receiver.GPS(location.getLatitude(), location.getLongitude());
-                    uploadPeerToPeerList(MainActivity.receiver);
-                }
-            };
-            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);    //limit update to once every 5 seconds
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);    //limit update to once every 5 seconds
         }
+        MainActivity.receiver = new Receiver(MainActivity.userProfile.username,
+                                             MainActivity.userProfile.photoPath);
+
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener()
+        {
+            //region unused function overrides
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
+            //endregion
+
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.e("MainReceiverFragment","GPS location received");
+                Log.e("MainReceiverFragment", "lat="+location.getLatitude()+" long="+location.getLongitude());
+                // TODO: decide where to get the time from
+                //MainActivity.receiver.gps.north = location.getLatitude();
+                //MainActivity.receiver.gps.east = location.getLongitude();
+                //MainActivity.receiver.gps.time_last_update = location.getTime();
+                MainActivity.receiver.gps = new Receiver.GPS(location.getLatitude(), location.getLongitude());
+                uploadPeerToPeerList(MainActivity.receiver);
+            }
+        };
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);    //limit update to once every 5 seconds
+        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);  //TODO : send updates of GPS position (but then need to solve the bug of re-downloading pictures)
+
     }
 
 
