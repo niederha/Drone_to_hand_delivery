@@ -1,6 +1,7 @@
 package felix_loc_herman.drone_delivery;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -145,11 +146,15 @@ public class MainSenderFragment extends Fragment {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                         setLED(MainActivity.LED_COLOR.GREEN);
+                        Intent intent = new Intent(MainSenderFragment.this.getContext(), CreateFormActivity.class);
+                        intent.putExtra("username",MainActivity.userProfile.username);
+                        intent.putExtra("receiver_username","receivername");
+                        startActivity(intent);
                         //TODO: launch new activity for the sender. receiver is taken care of
                         //receivername
                         //receiver.username is the sender's username
                         //MainActivity.userProfile.username could also be used for this
-                        Toast.makeText(getContext(), "Connected to " + receivername, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "Connected to " + receivername, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
