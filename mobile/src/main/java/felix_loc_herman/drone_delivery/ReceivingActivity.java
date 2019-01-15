@@ -258,7 +258,6 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
                 break;
             case DRONE_FLYING_BACK_TO_SENDER:
                 Intent intent = new Intent(ReceivingActivity.this, MainActivity.class);
-                intent.putExtra("username", receiver_username);
                 intent.putExtra(MainActivity.USERNAME, receiver_username);
                 startActivity(intent);
                 //TODO : delete delivery structure?
