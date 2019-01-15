@@ -127,6 +127,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 droneHandler.goTo(sender_latitude,sender_longitude);
             }
         }
+        updateMap();
     }
 
     @Override
@@ -145,7 +146,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+/*
         //TODO : initialize with drone and receiver positions (and correct zoom?)
 
         LatLng droneLocation = new LatLng(drone_latitude,drone_longitude);
@@ -165,7 +166,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //set markers
         mMap.addMarker(new MarkerOptions().position(droneLocation).title("drone"));
         mMap.addMarker(new MarkerOptions().position(receiverLocation).title("receiver"));
-        mMap.addMarker(new MarkerOptions().position(senderLocation).title("sender"));
+        mMap.addMarker(new MarkerOptions().position(senderLocation).title("sender"));*/
 
     }
 
@@ -181,11 +182,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         LatLng receiverLocation = new LatLng(receiver_latitude,receiver_longitude);
         LatLng senderLocation = new LatLng(sender_latitude,sender_longitude);
 
-        double margin=0.01;
-        double min_lat=Math.min(Math.min(drone_latitude,sender_latitude),receiver_longitude) - margin;
-        double max_lat=Math.max(Math.max(drone_latitude,sender_latitude),receiver_longitude) + margin;
-        double min_long=Math.min(Math.min(drone_longitude,sender_longitude),receiver_longitude) - margin;
-        double max_long=Math.max(Math.max(drone_longitude,sender_longitude),receiver_longitude) + margin;
+        double min_lat=Math.min(Math.min(drone_latitude,sender_latitude),receiver_latitude);
+        double max_lat=Math.max(Math.max(drone_latitude,sender_latitude),receiver_latitude);
+        double min_long=Math.min(Math.min(drone_longitude,sender_longitude),receiver_longitude);
+        double max_long=Math.max(Math.max(drone_longitude,sender_longitude),receiver_longitude);
+        double lat_margin = 0.1*Math.abs(max_lat-min_lat);
+        double long_margin = 0.1*Math.abs(max_long-min_long);
+        min_lat-=lat_margin;
+        max_lat+=lat_margin;
+        min_long-=long_margin;
+        max_lat+=long_margin;
         LatLngBounds boundaries=new LatLngBounds(new LatLng(min_lat,min_long), new LatLng(max_lat,max_long));
 
         mMap.clear();
@@ -364,8 +370,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            double new_receiver_latitude=dataSnapshot.child("GPS").child("north").getValue(Double.class).doubleValue();
-            double new_receiver_longitude=dataSnapshot.child("GPS").child("east").getValue(Double.class).doubleValue();
+            double new_receiver_latitude=dataSnapshot.child("north").getValue(Double.class).doubleValue();
+            double new_receiver_longitude=dataSnapshot.child("east").getValue(Double.class).doubleValue();
 
             if(new_receiver_latitude!=receiver_latitude || new_receiver_longitude!=receiver_longitude)
             {

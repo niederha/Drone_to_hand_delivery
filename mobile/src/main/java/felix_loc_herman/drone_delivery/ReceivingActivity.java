@@ -190,11 +190,19 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         LatLng droneLocation = new LatLng(drone_latitude, drone_longitude);
         LatLng receiverLocation = new LatLng(receiver_latitude, receiver_longitude);
 
-        double margin = 0.01;
-        double min_lat = Math.min(drone_latitude, receiver_longitude) - margin;
-        double max_lat = Math.max(drone_latitude, receiver_longitude) + margin;
-        double min_long = Math.min(drone_longitude, receiver_longitude) - margin;
-        double max_long = Math.max(drone_longitude, receiver_longitude) + margin;
+
+        double min_lat = Math.min(drone_latitude, receiver_latitude);
+        double max_lat = Math.max(drone_latitude, receiver_latitude);
+        double min_long = Math.min(drone_longitude, receiver_longitude);
+        double max_long = Math.max(drone_longitude, receiver_longitude);
+        double lat_margin = 0.1*Math.abs(max_lat-min_lat);
+        double long_margin = 0.1*Math.abs(max_long-min_long);
+        min_lat-=lat_margin;
+        max_lat+=lat_margin;
+        min_long-=long_margin;
+        max_lat+=long_margin;
+
+
         LatLngBounds boundaries = new LatLngBounds(new LatLng(min_lat, min_long), new LatLng(max_lat, max_long));
 
         mMap.clear();

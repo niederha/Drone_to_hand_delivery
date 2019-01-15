@@ -64,8 +64,8 @@ public class LoadingActivity extends AppCompatActivity {
         Log.v(TAG, "To Map Activity button clicked");
 
         Intent intent = new Intent(LoadingActivity.this, MapActivity.class);
-        intent.putExtra("username","fake_sender_username");
-        intent.putExtra("receiver_username","fake_receiver_username");
+        intent.putExtra("username","Shrek");
+        intent.putExtra("receiver_username","felix");
         DroneHandler droneHandler=new DroneHandler(getApplicationContext());
         intent.putExtra("droneHandler",droneHandler);
         Log.e("LOADING_ACTIVITY","Warning : in order for this button to work properly, the delivery from fake_sender_username to fake_receiver_username has to be already set properly in firebase (otherways you might get errors because things are not initialized properly)");

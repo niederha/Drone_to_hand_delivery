@@ -140,12 +140,15 @@ public class CreateFormActivity extends AppCompatActivity implements LocationLis
             mutableData.child("status").setValue(REQUEST_SENT_TO_DATABASE);
             mutableData.child("drone_GPS").child("north").setValue(user_latitude);    // add user's GPS cordinate as drone_GPS
             mutableData.child("drone_GPS").child("east").setValue(user_longitude);    //add user's GPS cordinate as drone_GPS
+            mutableData.child("droneStatus").setValue(DroneHandler.IDLE);    //add user's GPS cordinate as drone_GPS
             mutableData.child("landing_allowed").setValue(false);
             mutableData.child("ETA").setValue(0);   //TODO: set properly ETA
             mutableData.child("distance").setValue(0.0);  //TODO : set properly distance
             mutableData.child("item").setValue(itemName);
             mutableData.child("quantity").setValue(itemQuantity);
             mutableData.child("message_to_receiver").setValue(message);
+
+
 
             return Transaction.success(mutableData);
         }
