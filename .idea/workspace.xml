@@ -11,7 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="259285a2-ec31-4ab5-882a-23aba6416bd6" name="Default" comment="" />
+    <list default="true" id="36fe7953-1e5d-488f-a35a-c7b964ca3bb3" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,76 +33,48 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DroneHandler.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DroneHandler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="242" selection-start-line="242" selection-end-line="242" />
+            <state relative-caret-position="-2216">
+              <caret line="44" column="25" selection-start-line="44" selection-start-column="25" selection-end-line="44" selection-end-column="25" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#isConnectedToADrone#0;class#DroneHandler#0" />
-                <element signature="method#takeOff#0;class#DroneHandler#0" />
-                <element signature="method#land#0;class#DroneHandler#0" />
-                <element signature="method#getDroneState#0;class#DroneHandler#0" />
+                <element signature="e#3179#3180#0" expanded="true" />
+                <element signature="e#3233#3234#0" expanded="true" />
+                <element signature="method#updateFirebase_distance#0;class#DroneHandler#0" />
+                <element signature="method#updateFirebase_DroneGPS#0;class#DroneHandler#0" />
                 <element signature="method#onExtensionStateChanged#0;class#DroneHandler#0" />
-                <element signature="method#onStateChanged#0;class#DroneHandler#0" />
-                <element signature="e#7530#7531#0" expanded="true" />
-                <element signature="e#7554#7555#0" expanded="true" />
-                <element signature="e#7673#7674#0" expanded="true" />
-                <element signature="e#7697#7698#0" expanded="true" />
-                <element signature="method#createController#0;class#DroneHandler#0" />
-                <element signature="method#createDiscoveryDevice#0;class#DroneHandler#0" />
-                <element signature="method#getPilotingState#0;class#DroneHandler#0" />
+                <element signature="e#8887#9507#0" />
+                <element signature="e#9568#9569#0" expanded="true" />
+                <element signature="e#9592#9593#0" expanded="true" />
+                <element signature="e#11397#11398#0" expanded="true" />
+                <element signature="e#11470#11471#0" expanded="true" />
+                <element signature="e#12083#12291#0" />
+                <element signature="e#10063#10393#0" />
+                <element signature="e#10399#11186#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DroneConnectionActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneConnectionActivity.java">
+      <file leaf-file-name="MapActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/MapActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="110">
-              <caret line="51" column="33" selection-start-line="51" selection-start-column="33" selection-end-line="51" selection-end-column="33" />
+            <state relative-caret-position="161">
+              <caret line="351" column="27" selection-start-line="351" selection-start-column="19" selection-end-line="351" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="device_list_item.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/device_list_item.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="425">
+              <caret line="25" column="38" selection-start-line="25" selection-start-column="38" selection-end-line="25" selection-end-column="38" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2526#3122#0" expanded="true" />
-                <element signature="e#3121#3122#0" expanded="true" />
-                <element signature="e#6677#6973#0" expanded="true" />
-                <element signature="e#6972#6973#0" expanded="true" />
-                <element signature="e#7533#7800#0" expanded="true" />
-                <element signature="e#7799#7800#0" expanded="true" />
+                <element signature="e#672#693#0" expanded="true" />
+                <element signature="e#957#976#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="activity_drone_connection.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_drone_connection.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="31" column="36" selection-start-line="31" selection-start-column="36" selection-end-line="31" selection-end-column="36" />
-            </state>
-          </provider>
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="activity_edit_profile.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_edit_profile.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state />
-          </provider>
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="empty_device_list.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/empty_device_list.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="15" column="44" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
             </state>
           </provider>
           <provider editor-type-id="android-designer2">
@@ -113,24 +85,50 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mobile/src/main/res/values/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="37" column="50" selection-start-line="37" selection-start-column="50" selection-end-line="37" selection-end-column="50" />
+            <state relative-caret-position="331">
+              <caret line="41" column="53" selection-start-line="41" selection-start-column="53" selection-end-line="41" selection-end-column="53" />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_drone_connection.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_drone_connection.xml">
+          <provider editor-type-id="text-editor">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="android-designer2">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_edit_profile.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_edit_profile.xml">
+          <provider editor-type-id="text-editor">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="android-designer2">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_create_form.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_create_form.xml">
+          <provider editor-type-id="text-editor">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="android-designer2">
+            <state />
           </provider>
         </entry>
       </file>
     </leaf>
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="layoutResourceFile" />
-      </list>
-    </option>
-  </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>activity_drone_connection</find>
+      <find>distance</find>
+      <find>status</find>
+      <find>statu</find>
+      <find>state</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -3447,12 +3445,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneHandler.java" />
-        <option value="$PROJECT_DIR$/mobile/src/main/res/layout/drone_connection_activity.xml" />
-        <option value="$PROJECT_DIR$/mobile/src/main/res/layout/empty_device_list.xml" />
         <option value="$PROJECT_DIR$/mobile/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/mobile/src/main/res/layout/activity_drone_connection.xml" />
-        <option value="$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneConnectionActivity.java" />
+        <option value="$PROJECT_DIR$/mobile/src/main/res/layout/device_list_item.xml" />
+        <option value="$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneHandler.java" />
       </list>
     </option>
   </component>
@@ -3466,6 +3461,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="ProjectPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -3495,27 +3491,24 @@
               <item name="res" type="d4f16f75:AndroidResFolderNode" />
               <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
             </path>
+            <path>
+              <item name="Drone_to_hand_delivery" type="1abcf292:AndroidViewProjectNode" />
+              <item name="mobile" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
-      <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.language.Kotlin" />
-  </component>
-  <component name="RecentsManager">
-    <key name="android.template.packageName">
-      <recent name="felix_loc_herman.drone_delivery" />
-    </key>
-    <key name="android.template.parentActivityClass">
-      <recent name="" />
-    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -3529,7 +3522,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Android App.mobile">
+  <component name="RunManager" selected="Android App.wear">
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -3687,16 +3680,17 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="259285a2-ec31-4ab5-882a-23aba6416bd6" name="Default" comment="" />
-      <created>1547649665720</created>
+      <changelist id="36fe7953-1e5d-488f-a35a-c7b964ca3bb3" name="Default" comment="" />
+      <created>1547664782914</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1547649665720</updated>
+      <updated>1547664782914</updated>
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Android Profiler" show_stripe_button="false" />
@@ -3714,7 +3708,7 @@
       <window_info id="Capture Tool" />
       <window_info id="Designer" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24939272" />
-      <window_info anchor="bottom" id="Build" visible="true" weight="0.3291592" />
+      <window_info anchor="bottom" id="Build" weight="0.3291592" />
       <window_info anchor="right" id="Gradle" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Theme Preview" />
@@ -3733,31 +3727,29 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="242" selection-start-line="242" selection-end-line="242" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#isConnectedToADrone#0;class#DroneHandler#0" />
-            <element signature="method#takeOff#0;class#DroneHandler#0" />
-            <element signature="method#land#0;class#DroneHandler#0" />
-            <element signature="method#getDroneState#0;class#DroneHandler#0" />
-            <element signature="method#onExtensionStateChanged#0;class#DroneHandler#0" />
-            <element signature="method#onStateChanged#0;class#DroneHandler#0" />
-            <element signature="e#7530#7531#0" expanded="true" />
-            <element signature="e#7554#7555#0" expanded="true" />
-            <element signature="e#7673#7674#0" expanded="true" />
-            <element signature="e#7697#7698#0" expanded="true" />
-            <element signature="method#createController#0;class#DroneHandler#0" />
-            <element signature="method#createDiscoveryDevice#0;class#DroneHandler#0" />
-            <element signature="method#getPilotingState#0;class#DroneHandler#0" />
-          </folding>
-        </state>
+    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_create_form.xml">
+      <provider editor-type-id="text-editor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/content_drone_connection.xml">
+    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_drone_connection.xml">
+      <provider editor-type-id="text-editor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_edit_profile.xml">
       <provider editor-type-id="text-editor">
         <state />
       </provider>
@@ -3767,70 +3759,52 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mobile/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="37" column="50" selection-start-line="37" selection-start-column="50" selection-end-line="37" selection-end-column="50" />
+        <state relative-caret-position="331">
+          <caret line="41" column="53" selection-start-line="41" selection-start-column="53" selection-end-line="41" selection-end-column="53" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/drone_connection_activity.xml">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="20" column="43" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_edit_profile.xml">
+    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/device_list_item.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/LoginActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-187">
-          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneConnectionActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="51" column="33" selection-start-line="51" selection-start-column="33" selection-end-line="51" selection-end-column="33" />
+        <state relative-caret-position="425">
+          <caret line="25" column="38" selection-start-line="25" selection-start-column="38" selection-end-line="25" selection-end-column="38" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2526#3122#0" expanded="true" />
-            <element signature="e#3121#3122#0" expanded="true" />
-            <element signature="e#6677#6973#0" expanded="true" />
-            <element signature="e#6972#6973#0" expanded="true" />
-            <element signature="e#7533#7800#0" expanded="true" />
-            <element signature="e#7799#7800#0" expanded="true" />
+            <element signature="e#672#693#0" expanded="true" />
+            <element signature="e#957#976#0" expanded="true" />
           </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/empty_device_list.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="15" column="44" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
-        </state>
-      </provider>
       <provider editor-type-id="android-designer2">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mobile/src/main/res/layout/activity_drone_connection.xml">
+    <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/MapActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" column="36" selection-start-line="31" selection-start-column="36" selection-end-line="31" selection-end-column="36" />
+        <state relative-caret-position="161">
+          <caret line="351" column="27" selection-start-line="351" selection-start-column="19" selection-end-line="351" selection-end-column="27" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mobile/src/main/java/felix_loc_herman/drone_delivery/DroneHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2216">
+          <caret line="44" column="25" selection-start-line="44" selection-start-column="25" selection-end-line="44" selection-end-column="25" />
+          <folding>
+            <element signature="e#3179#3180#0" expanded="true" />
+            <element signature="e#3233#3234#0" expanded="true" />
+            <element signature="method#updateFirebase_distance#0;class#DroneHandler#0" />
+            <element signature="method#updateFirebase_DroneGPS#0;class#DroneHandler#0" />
+            <element signature="method#onExtensionStateChanged#0;class#DroneHandler#0" />
+            <element signature="e#8887#9507#0" />
+            <element signature="e#9568#9569#0" expanded="true" />
+            <element signature="e#9592#9593#0" expanded="true" />
+            <element signature="e#11397#11398#0" expanded="true" />
+            <element signature="e#11470#11471#0" expanded="true" />
+            <element signature="e#12083#12291#0" />
+            <element signature="e#10063#10393#0" />
+            <element signature="e#10399#11186#0" />
+          </folding>
+        </state>
       </provider>
     </entry>
   </component>

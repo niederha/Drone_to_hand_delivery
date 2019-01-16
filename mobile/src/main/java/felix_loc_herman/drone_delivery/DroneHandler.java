@@ -27,11 +27,15 @@ import android.util.Log;
 
 
 import static android.content.ContentValues.TAG;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.round;
+import static java.lang.Math.sin;
+import static java.lang.Math.toDegrees;
+import static java.lang.StrictMath.abs;
 
 public class DroneHandler implements ARDeviceControllerListener {
-    /*public enum droneState{
-            IDLE, GOING_TOR_ECIVER, WATINTG_TO_LAND, LANDED_AT_RECIEVER, GOING_BACK
-        }*/
+
     public static final int IDLE=0;
     public static final int FLYING=1;
     public static final int WAITING_TO_LAND=2;
@@ -40,13 +44,26 @@ public class DroneHandler implements ARDeviceControllerListener {
     public static final int NOT_CONNECTED=5;
     private final DatabaseReference deliveryRef;
 
+    private final int critBatteryLevel = 5;
+    private final float distTolerance = 2;
+    private final float angleTolerance = 10;
     private ARDeviceController mDroneController;
     private ARDiscoveryDeviceService mService;
-    private ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKFILEPLAYINGSTATECHANGED_STATE_ENUM autoFlightState;
     static private int state = NOT_CONNECTED;
+    private double latitude = 500;
+    private double longitude = 500;
+    private double altitude;
+    private double goalLatitude;
+    private double goalLongitude;
+    private float yaw;
+    private float pitch;
+    private float roll;
+    private int forwardAngle = 10;
+    private boolean gotoPt = false;
 
     public DroneHandler(ARDiscoveryDeviceService service, String sender_username) {
         state = NOT_CONNECTED;
+        updateFirebaseDroneStatus(state);
         mService = service;
         ARDiscoveryDevice device = createDiscoveryDevice();
         mDroneController = createController(device);
@@ -55,31 +72,26 @@ public class DroneHandler implements ARDeviceControllerListener {
             ARCONTROLLER_ERROR_ENUM error = mDroneController.start();
             mDroneController.getFeatureCommon().sendWifiSettingsOutdoorSetting((byte)1);
             state = IDLE;
+            updateFirebaseDroneStatus(state);
         }
         else{
             Log.e(TAG, "NO CONTROLLER");
         }
-
-        //connect to firebase
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference deliveryGetRef = database.getReference("deliveries");
-        deliveryRef = deliveryGetRef.child(sender_username);
     }
 
-    private void updateFirebase_ETA(double ETA)
+    private void updateFirebaseETA(double ETA)
     {
         deliveryRef.child("ETA").setValue(ETA);
     }
-    private void updateFirebase_distance(double distance)
+    private void updateFirebaseDistance(double distance)
     {
         deliveryRef.child("distance").setValue(distance);
     }
-    private void updateFirebase_DroneStatus(double droneStatus)
+    private void updateFirebaseDroneStatus(int droneStatus)
     {
         deliveryRef.child("droneStatus").setValue(droneStatus);
     }
-    private void updateFirebase_DroneGPS(double latitude, double longitude)
+    private void updateFirebaseDroneGPS(double latitude, double longitude)
     {
         deliveryRef.child("drone_GPS").child("north").setValue(latitude);
         deliveryRef.child("drone_GPS").child("east").setValue(longitude);
@@ -87,15 +99,6 @@ public class DroneHandler implements ARDeviceControllerListener {
 
 
     //region PublicFunctions
-
-    public boolean isConnectedToADrone(){
-        if (mDroneController != null){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
     public void takeOff()
     {
@@ -109,6 +112,7 @@ public class DroneHandler implements ARDeviceControllerListener {
             }
             else{
                 state = FLYING;
+                updateFirebaseDroneStatus(state);
             }
         }
 
@@ -116,36 +120,38 @@ public class DroneHandler implements ARDeviceControllerListener {
 
     public void land()
     {
+        // Reset drone Attitude
+        gotoPt = false;
+        mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) 0);
+        mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) 0);
+        mDroneController.getFeatureARDrone3().setPilotingPCMDFlag((byte)0);
+
+        // Perform Landing
         ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM flyingState = getPilotingState();
         if (ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_HOVERING.equals(flyingState) ||
                 ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_HOVERING.equals(flyingState))
         {
             ARCONTROLLER_ERROR_ENUM error = mDroneController.getFeatureARDrone3().sendPilotingLanding();
-
+            state = LANDED;
+            updateFirebaseDroneStatus(state);
             if (!error.equals(ARCONTROLLER_ERROR_ENUM.ARCONTROLLER_OK))
             {
                 ARSALPrint.e(TAG, "Error while sending take off: " + error);
             }
             else{
                 state = FLYING;
+                updateFirebaseDroneStatus(state);
             }
 
         }
     }
 
-    static public int getDroneState(){
-        if (state == NOT_CONNECTED){
-            return NOT_CONNECTED;
-        }
-        else{
-            return state;
-        }
-    }
 
-
-    public void goTo(double latitude, double  longitude)
+    public void goTo(double goalLatitude, double  goalLongitude)
     {
-
+        gotoPt=true;
+        this.goalLatitude=goalLatitude;
+        this.goalLongitude=goalLongitude;
     }
 
     @Override
@@ -156,27 +162,66 @@ public class DroneHandler implements ARDeviceControllerListener {
 
     @Override
     public void onCommandReceived (ARDeviceController deviceController, ARCONTROLLER_DICTIONARY_KEY_ENUM commandKey, ARControllerDictionary elementDictionary) {
-        if ((commandKey == ARCONTROLLER_DICTIONARY_KEY_ENUM.ARCONTROLLER_DICTIONARY_KEY_COMMON_MAVLINKSTATE_MAVLINKPLAYERRORSTATECHANGED) && (elementDictionary != null)){
+
+        // On GPS position change
+        if (commandKey == ARCONTROLLER_DICTIONARY_KEY_ENUM.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED && (elementDictionary != null)) {
             ARControllerArgumentDictionary<Object> args = elementDictionary.get(ARControllerDictionary.ARCONTROLLER_DICTIONARY_SINGLE_KEY);
             if (args != null) {
-                ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKPLAYERRORSTATECHANGED_ERROR_ENUM error = ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKPLAYERRORSTATECHANGED_ERROR_ENUM.getFromValue((Integer)args.get(ARFeatureCommon.ARCONTROLLER_DICTIONARY_KEY_COMMON_MAVLINKSTATE_MAVLINKPLAYERRORSTATECHANGED_ERROR));
-                Log.e(TAG, error.toString());
+                double newLatitude = (double) args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED_LATITUDE);
+                double newLongitude = (double) args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED_LONGITUDE);
+                double newAltitude = (double) args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED_ALTITUDE);
+                if (abs(newLatitude) < 90 && abs(newLongitude) < 90) {
+                    latitude = newLatitude;
+                    longitude = newLongitude;
+                    altitude = newAltitude;
+                    updateFirebaseDroneGPS(latitude,longitude);
+
+                }
+                if (state == FLYING && gotoPt) {
+                    updateFirebaseDistance(getDistance());
+
+                    if (getDistance() < distTolerance) {
+                        mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) 0);
+                        mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) 0);
+                        mDroneController.getFeatureARDrone3().setPilotingPCMDFlag((byte) 0);
+                        state = WAITING_TO_LAND;
+                        updateFirebaseDroneStatus(state);
+                    } else {
+                        mDroneController.getFeatureARDrone3().setPilotingPCMDFlag((byte) 1);
+                        if (abs(toDegrees(angleToPoint()) - toDegrees(yaw)) < angleTolerance) {
+                            Log.e(TAG, "FWD");
+                            mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) (forwardAngle / 180 * 100));
+                        } else {
+                            int yawToReach = (int) (round(toDegrees(angleToPoint()) / 180) * 100.0);
+                            Log.e(TAG, "Angle: " + yawToReach);
+                            mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) 0);
+                            mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) yawToReach);
+                        }
+                    }
+                }
             }
         }
 
-        if (commandKey == ARCONTROLLER_DICTIONARY_KEY_ENUM.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED && (elementDictionary != null)){
-            ARControllerArgumentDictionary<Object> args = elementDictionary.get(ARControllerDictionary.ARCONTROLLER_DICTIONARY_SINGLE_KEY);
-            if (args != null) {
-                double latitude = (double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED_LATITUDE);
-                double longitude = (double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED_LONGITUDE);
-                double altitude = (double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_POSITIONCHANGED_ALTITUDE);
-            }
-        }
-
+        // On battery level change
         if ((commandKey == ARCONTROLLER_DICTIONARY_KEY_ENUM.ARCONTROLLER_DICTIONARY_KEY_COMMON_COMMONSTATE_BATTERYSTATECHANGED) && (elementDictionary != null)){
             ARControllerArgumentDictionary<Object> args = elementDictionary.get(ARControllerDictionary.ARCONTROLLER_DICTIONARY_SINGLE_KEY);
             if (args != null) {
                 byte percent = (byte)((Integer)args.get(ARFeatureCommon.ARCONTROLLER_DICTIONARY_KEY_COMMON_COMMONSTATE_BATTERYSTATECHANGED_PERCENT)).intValue();
+                int batLevel = percent;
+                if (batLevel<critBatteryLevel)
+                {
+                    land();
+                }
+            }
+        }
+
+        // On attitude change
+        if ((commandKey == ARCONTROLLER_DICTIONARY_KEY_ENUM.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_ATTITUDECHANGED) && (elementDictionary != null)){
+            ARControllerArgumentDictionary<Object> args = elementDictionary.get(ARControllerDictionary.ARCONTROLLER_DICTIONARY_SINGLE_KEY);
+            if (args != null) {
+                roll = (float)((Double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_ATTITUDECHANGED_ROLL)).doubleValue();
+                pitch = (float)((Double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_ATTITUDECHANGED_PITCH)).doubleValue();
+                yaw = (float)((Double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_ATTITUDECHANGED_YAW)).doubleValue();
             }
         }
     }
@@ -212,15 +257,37 @@ public class DroneHandler implements ARDeviceControllerListener {
 
 
     //return current distance
-    public double getDistance() {return  1;}
+    public double getDistance() {
+        return distance(latitude,goalLatitude,longitude,goalLongitude);
+    }
 
     //return distance between 2 points
-    static public double distance(double point_A_lat, double point_A_long,double point_B_lat, double point_B_long){
-        return 1;
+    static public double distance(double pointALat, double pointALong,double pointBLat, double pointBLong){
+        if (abs(pointALat)>90 || abs(pointALong)>90 || abs(pointBLat)>90 || abs(pointBLong)>90){
+            return 0;
+        }
+        float earthRadiusKm = 6371.0f;
+        float kmToM = 1000;
+        double dLat = abs(pointALat-pointBLat);
+        double dLon = abs(pointALong-pointBLong);
+
+        double a = sin(dLat/2) * sin(dLat/2) +
+                sin(dLon/2) * sin(dLon/2) * cos(pointALat) * cos(pointBLat);
+        double c = 2 * atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = c *earthRadiusKm;
+        return (float) distance*kmToM;
     }
 
 
     //endregion
+
+
+    private float angleToPoint(){
+        double dLat = abs(goalLatitude-latitude);
+        double dLon = abs(goalLongitude-longitude);
+        float angle = (float) atan2(dLon, dLat);
+        return angle;
+    }
 
     private ARDeviceController createController(ARDiscoveryDevice device)
     {
