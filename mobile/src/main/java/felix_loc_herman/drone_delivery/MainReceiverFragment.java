@@ -286,8 +286,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                                             //deliveryRef = deliveryGetRef.child(sendername);
                                             deliveryRef.child("status").setValue(3);    //set status to 3=DELIVERY ACCEPTED
 
-                                            disconnectPeer();
-                                            deliveryGetRef.onDisconnect();
+                                            //disconnectPeer();
+                                            //deliveryGetRef.onDisconnect();
 
                                             Intent intent = new Intent(MainReceiverFragment.this.getContext(), ReceivingActivity.class);
                                             intent.putExtra("receiver_name", MainActivity.receiver.username);

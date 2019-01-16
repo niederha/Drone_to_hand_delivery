@@ -126,7 +126,7 @@ public class TakeOffActivity extends AppCompatActivity {
 
     public void onDestroy()
     {
-        Log.i("MapActivity","OnDestroy : stopping listeners");
+        Log.i("TakeOffActivity","OnDestroy : stopping listeners");
         if(deliveryRef!=null && valueEventListenerDelivery!=null)
             deliveryRef.removeEventListener(valueEventListenerDelivery);
         super.onDestroy();
