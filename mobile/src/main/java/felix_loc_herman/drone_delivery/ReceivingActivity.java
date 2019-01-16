@@ -53,6 +53,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
     private String sender_username;
     private String receiver_username;
     private DatabaseReference deliveryRef;
+    private ValueEventListener valueEventListenerDelivery;
     private DatabaseReference receiverRef;
     private DatabaseReference receiverGPSRef;
     private double distance;
@@ -103,7 +104,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
 
         DatabaseReference deliveryGetRef = database.getReference("deliveries");
         deliveryRef = deliveryGetRef.child(sender_username);
-        deliveryRef.addValueEventListener(new ReceivingActivity.DeliveryUpdateEventListener(this));
+        valueEventListenerDelivery = deliveryRef.addValueEventListener(new DeliveryUpdateEventListener(this));
 
         DatabaseReference userGetRef = database.getReference("receiver");
         receiverRef = userGetRef.child(receiver_username);
@@ -342,6 +343,14 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
         }
+    }
+
+    public void onDestroy()
+    {
+        Log.i("ReceivingActivity","OnDestroy : stopping listeners");
+        if(deliveryRef!=null && valueEventListenerDelivery!=null)
+            deliveryRef.removeEventListener(valueEventListenerDelivery);
+        super.onDestroy();
     }
 
 }

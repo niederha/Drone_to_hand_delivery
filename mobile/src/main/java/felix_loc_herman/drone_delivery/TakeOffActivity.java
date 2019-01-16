@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ public class TakeOffActivity extends AppCompatActivity {
     private String sender_username;
     private String receiver_username;
     private DatabaseReference deliveryRef;
+    private ValueEventListener valueEventListenerDelivery;
     private static final int DRONE_FLYING_TO_RECEIVER = 5;
     private double distance;
     private double ETA;
@@ -65,7 +67,7 @@ public class TakeOffActivity extends AppCompatActivity {
         DatabaseReference deliveryGetRef = database.getReference("deliveries");
         deliveryRef = deliveryGetRef.child(sender_username);
 
-        deliveryRef.addValueEventListener(new DeliveryUpdateEventListener(this));
+        valueEventListenerDelivery = deliveryRef.addValueEventListener(new DeliveryUpdateEventListener(this));
     }
 
     public void activityTakeOff_CancelButton_Clicked(View view) {
@@ -118,5 +120,13 @@ public class TakeOffActivity extends AppCompatActivity {
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
         }
+    }
+
+    public void onDestroy()
+    {
+        Log.i("MapActivity","OnDestroy : stopping listeners");
+        if(deliveryRef!=null && valueEventListenerDelivery!=null)
+            deliveryRef.removeEventListener(valueEventListenerDelivery);
+        super.onDestroy();
     }
 }

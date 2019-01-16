@@ -42,6 +42,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private DatabaseReference deliveryRef;
     private DatabaseReference receiverGPSRef;
     private ValueEventListener myReceiverGPSEventListener;
+    private ValueEventListener valueEventListenerDelivery;
     private double distance;
     private double ETA;
     private double drone_longitude;
@@ -94,7 +95,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         DatabaseReference deliveryGetRef = database.getReference("deliveries");
         deliveryRef = deliveryGetRef.child(sender_username);
-        deliveryRef.addValueEventListener(new MapActivity.DeliveryUpdateEventListener(this));
+        valueEventListenerDelivery = deliveryRef.addValueEventListener(new DeliveryUpdateEventListener(this));
 
         DatabaseReference userGetRef = database.getReference("receiver");
         receiverGPSRef = userGetRef.child(receiver_username).child("GPS");
@@ -393,6 +394,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
         }
+    }
+
+    public void onDestroy()
+    {
+        Log.i("MapActivity","OnDestroy : stopping listeners");
+        if(deliveryRef!=null && valueEventListenerDelivery!=null)
+            deliveryRef.removeEventListener(valueEventListenerDelivery);
+        if(receiverGPSRef!=null && myReceiverGPSEventListener!=null)
+            receiverGPSRef.removeEventListener(myReceiverGPSEventListener);
+        super.onDestroy();
     }
 }
 

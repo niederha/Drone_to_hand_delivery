@@ -248,8 +248,7 @@ public class EditProfileActivity extends AppCompatActivity {
         final TextView passwordTextView = findViewById(R.id.editPassword);
         final ImageView imageVew = findViewById(R.id.userImage);
         //endregion
-
-        profileGetRef.child(userProfile.username).addValueEventListener(new ValueEventListener() {
+        profileGetRef.child(userProfile.username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String db_username = dataSnapshot.child(DB_USERNAME).getValue(String.class);

@@ -39,6 +39,7 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
     private int status;
 
     private DatabaseReference deliveryRef;
+    private ValueEventListener valueEventListenerDelivery;
 
 
     @Override
@@ -56,7 +57,7 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
         DatabaseReference deliveryGetRef = database.getReference("deliveries");
         deliveryRef = deliveryGetRef.child(sender_username);
 
-        deliveryRef.addValueEventListener(new StatusUpdateEventListener(this));
+        valueEventListenerDelivery = deliveryRef.addValueEventListener(new StatusUpdateEventListener(this));
 
         setContentView(R.layout.activity_waiting_for_acceptation_by_receiver);
     }
@@ -109,5 +110,13 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
         }
+    }
+
+    public void onDestroy()
+    {
+        Log.i("MapActivity","OnDestroy : stopping listeners");
+        if(deliveryRef!=null && valueEventListenerDelivery!=null)
+            deliveryRef.removeEventListener(valueEventListenerDelivery);
+        super.onDestroy();
     }
 }
