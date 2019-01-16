@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:text="Cancel"
-        android:onClick="activityReceiving_Cancelbutton"/>
+        android:onClick="activityReceiverMap_Cancelbutton"/>
 
 
 </LinearLayout>
