@@ -116,6 +116,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        WatchHandler.init(this);
     }
 
     @Override
@@ -345,6 +347,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 ETA=new_ETA;
                 TextView tv_ETA=(TextView) findViewById(R.id.activityMap_ETA_textView);
                 tv_ETA.setText(String.valueOf(ETA));
+
+                WatchHandler.sendMessage(WatchHandler.MESSAGE_PATH, String.valueOf(ETA) + " min");
             }
 
             if(new_distance!=distance)
@@ -405,6 +409,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             deliveryRef.removeEventListener(valueEventListenerDelivery);
         if(receiverGPSRef!=null && myReceiverGPSEventListener!=null)
             receiverGPSRef.removeEventListener(myReceiverGPSEventListener);
+        WatchHandler.disconnect();
         super.onDestroy();
     }
 }
