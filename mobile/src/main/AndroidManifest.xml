@@ -31,7 +31,8 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".LoadingActivity">
+        <activity android:name=".LoadingActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,32 +42,39 @@
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true" />
         <activity
             android:name=".EditProfileActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:noHistory="true"></activity>
         <activity
             android:name=".CreateFormActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity
             android:name=".WaitingForAcceptationByReceiverActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity
             android:name=".TodoActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity
             android:name=".TakeOffActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -79,11 +87,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".MapActivity">
+        <activity android:name=".MapActivity"
+            android:noHistory="true">
 
             <!-- android:label="+@string/title_activity_map"> -->
         </activity>
-        <activity android:name=".ReceivingActivity"></activity>
+        <activity android:name=".ReceivingActivity"
+            android:noHistory="true"></activity>
     </application>
 
 </manifest>
