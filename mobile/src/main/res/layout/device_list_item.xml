@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="16sp"
-        tools:text="Device name"/>
+        tools:text="@string/device_name"/>
 
     <TextView
         android:id="@+id/deviceId"
@@ -23,5 +23,5 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="14sp"
-        tools:text="Id de l'appareil"/>
+        tools:text="@string/device_id"/>
 </LinearLayout>

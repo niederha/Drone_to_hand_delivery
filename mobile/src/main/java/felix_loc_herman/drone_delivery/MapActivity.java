@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.parrot.arsdk.ardiscovery.ARDiscoveryDeviceService;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -90,7 +91,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Bundle b = getIntent().getExtras();
         sender_username = b.getString("username");
         receiver_username = b.getString("receiver_username");
-        droneHandler = (DroneHandler) b.getSerializable("droneHandler");
+        ARDiscoveryDeviceService mDroneService = (ARDiscoveryDeviceService) b.getParcelable("droneHandler");
+        droneHandler = new DroneHandler(mDroneService,sender_username);
 
 
         //connect to firebase
@@ -118,6 +120,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         WatchHandler.init(this);
+        droneHandler.takeOff();
+
     }
 
     @Override
@@ -270,12 +274,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             droneHandler.land();;
         }else if(status==DRONE_LANDED_AT_SENDER)
         {
+
+            if(deliveryRef!=null && valueEventListenerDelivery!=null)
+                deliveryRef.removeEventListener(valueEventListenerDelivery);
             //TODO : modify if we want a summary or a history of delivery(ies)
             deliveryRef.setValue(null); //delete the delivery structure
-            Intent intent = new Intent(this,MainActivity.class);
+            Intent intent = new Intent(this,GPSActivity.class);
             intent.putExtra(MainActivity.USERNAME,sender_username);
-            //intent.putExtra("receiver_username",receiver_username);
-            //intent.putExtra("droneHandler",droneHandler);
             startActivity(intent);
 
         }

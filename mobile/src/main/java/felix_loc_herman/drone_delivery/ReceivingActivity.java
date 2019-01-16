@@ -185,9 +185,8 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
     public void activityReceiverMap_Cancelbutton(View view) {
         deliveryRef.child("cancelled").setValue(true);  //inform the sender that we cancelled the delivery  //TODO : check if it threadsafe and correct
         Toast.makeText(this,"The delivery request has been cancelled successfully : the drone is now flying back to the sender",Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(ReceivingActivity.this, MainActivity.class);
-        intent.putExtra("username",receiver_username);
-        intent.putExtra("sender_username",sender_username);
+        Intent intent = new Intent(ReceivingActivity.this, GPSActivity.class);
+        intent.putExtra(MainActivity.USERNAME, receiver_username);
         startActivity(intent);
         //TODO : clean the receiver field?
         //TODO : block the button once drone is landing at receivers : needed?
@@ -269,7 +268,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
 
                 receiverRef.setValue(null); //delete receiver
 
-                Intent intent = new Intent(ReceivingActivity.this, MainActivity.class);
+                Intent intent = new Intent(ReceivingActivity.this, GPSActivity.class);
                 intent.putExtra(MainActivity.USERNAME, receiver_username);
                 startActivity(intent);
 

@@ -22,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class TakeOffActivity extends AppCompatActivity {
 
-    private DroneHandler droneHandler;
     private String sender_username;
     private String receiver_username;
     private DatabaseReference deliveryRef;
@@ -40,7 +39,8 @@ public class TakeOffActivity extends AppCompatActivity {
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
-        droneHandler=(DroneHandler)b.getSerializable("droneHandler");
+        distance=b.getDouble("distance");
+        ETA=b.getDouble("ETA");
 
 
         //TODO : if the drone isn't set up yet, lauch the set up activity for return
@@ -57,12 +57,11 @@ public class TakeOffActivity extends AppCompatActivity {
 
 
         TextView tv_dist=(TextView) findViewById(R.id.activityTakeOff_distance);
-        //tv_dist.setText(droneHandler.getDistance());
-        //TODO: uncomment line above once implemented
+        tv_dist.setText(distance+" m");
 
 
         TextView tv_ETA=(TextView) findViewById(R.id.activityTakeOff_ETA);
-        tv_ETA.setText(String.valueOf(droneHandler.getETAmin()));
+        tv_ETA.setText(ETA+" minutes");
 
         //setting up the firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -75,20 +74,17 @@ public class TakeOffActivity extends AppCompatActivity {
     public void activityTakeOff_CancelButton_Clicked(View view) {
         deliveryRef.child("cancelled").setValue(true);  //inform the receiver that we cancelled the delivery  //TODO : check if it threadsafe and correct
         Toast.makeText(this,"The delivery request has been cancelled successfully",Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this,GPSActivity.class);
+        intent.putExtra(MainActivity.USERNAME, sender_username);
         startActivity(intent);
     }
 
     public void activityTakeOff_TakeOffSWitch_switched(View view) {
         deliveryRef.child("status").setValue(DRONE_FLYING_TO_RECEIVER);  //inform the receiver that we cancelled the delivery  //TODO : check if it threadsafe and correct
-        droneHandler.takeOff();
-
-        //TODO : set destination?
 
         Intent intent = new Intent(this,MapActivity.class);
         intent.putExtra("username",sender_username);
         intent.putExtra("receiver_username",receiver_username);
-        intent.putExtra("droneHandler",droneHandler);
         startActivity(intent);
     }
 

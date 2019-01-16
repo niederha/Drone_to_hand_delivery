@@ -1,16 +1,24 @@
 package felix_loc_herman.drone_delivery;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +29,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -65,6 +75,8 @@ public class MainSenderFragment extends Fragment {
 
     private ListView listView;
     private ReceiverAdapter receiverAdapter;
+    private double sender_long=0;
+    private double sender_lat=0;
 
     public MainSenderFragment() {}
 
@@ -79,6 +91,8 @@ public class MainSenderFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
+        sender_long=MainActivity.user_longitude;
+        sender_lat=MainActivity.user_latitude;
         fragmentView = inflater.inflate(R.layout.fragment_main_sender, container, false);
 
         // Setting the adapter
@@ -106,8 +120,58 @@ public class MainSenderFragment extends Fragment {
             }
         });
 
+
         return fragmentView;
     }
+
+   /* private void inititializeGPSreception()
+    {
+
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            int TAG_CODE_PERMISSION_LOCATION=42;
+            ActivityCompat.requestPermissions(this.getActivity(), new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION },
+                    TAG_CODE_PERMISSION_LOCATION);
+            // missing permissions to gps
+            //Toast.makeText(getContext(),"Failed to enable GPS!", Toast.LENGTH_SHORT).show();
+            //connectedSwitch.setChecked(false);
+
+        }
+        //MainActivity.receiver = new Receiver(MainActivity.userProfile.username, MainActivity.userProfile.photoPath);
+
+      /*  LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener()
+        {
+            //region unused function overrides
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
+            //endregion
+
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.i("MainSenderFragment","GPS location received");
+                Log.i("MainSenderFragment", "lat="+location.getLatitude()+" long="+location.getLongitude());
+                sender_long=location.getLongitude();
+                sender_lat=location.getLatitude();
+            }
+        };
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);    //limit update to once every 5 seconds
+        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);  //TODO : send updates of GPS position (but then need to solve the bug of re-downloading pictures)
+*
+    }*/
 
     private void alertReceiverAndStartSending(final String receivername) {
 
@@ -149,6 +213,10 @@ public class MainSenderFragment extends Fragment {
                         Intent intent = new Intent(MainSenderFragment.this.getContext(), CreateFormActivity.class);
                         intent.putExtra("username",MainActivity.userProfile.username);
                         intent.putExtra("receiver_username",receivername);
+                        intent.putExtra("distance",DroneHandler.distance(sender_lat,sender_long,receiver.gps.north,receiver.gps.east));
+                        intent.putExtra("ETA",DroneHandler.computeETAmin(sender_lat,sender_long,receiver.gps.north,receiver.gps.east));
+                        intent.putExtra("sender_latitude",sender_lat);
+                        intent.putExtra("sender_longitude",sender_long);
                         startActivity(intent);
                         //TODO: launch new activity for the sender. receiver is taken care of
                         //receivername
@@ -234,9 +302,8 @@ public class MainSenderFragment extends Fragment {
             this.row_layout = row_layout;
         }
 
-        private String calculateETA(Receiver.GPS gps){
-            //TODO: calculate ETA!
-            return "12:34";
+        private double calculateETA(Receiver.GPS gps){
+            return DroneHandler.computeETAmin(sender_lat,sender_long,gps.north,gps.east);
         }
 
         @NonNull
@@ -262,7 +329,7 @@ public class MainSenderFragment extends Fragment {
                     ((TextView) row.findViewById(R.id.statusTextChangeMe)).setText(R.string.rec_busy);
                 }
 
-                String eta = calculateETA(getItem(position).gps);
+                String eta = calculateETA(getItem(position).gps)+" minutes";
                 ((TextView) row.findViewById(R.id.etaValue)).setText(eta);
             }
 

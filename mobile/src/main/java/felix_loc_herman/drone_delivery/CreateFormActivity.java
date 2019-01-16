@@ -34,7 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
-public class CreateFormActivity extends AppCompatActivity implements LocationListener {
+public class CreateFormActivity extends AppCompatActivity {
 
     private static final int REQUEST_SENT_TO_DATABASE = 1;      //status code for the delivery status (firebase)
 
@@ -43,9 +43,10 @@ public class CreateFormActivity extends AppCompatActivity implements LocationLis
     private String itemName;    //name of the item to be sent
     private Float itemQuantity; //number of items to be sent (NaN if not specified)
     private String message;     //mesage sent by the sender to the receiver
-    private DroneHandler droneHandler;
     private double user_longitude=0;
     private double user_latitude=0;
+    double distance;
+    double ETA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,44 +56,16 @@ public class CreateFormActivity extends AppCompatActivity implements LocationLis
         Bundle b=getIntent().getExtras();
         sender_username=b.getString("username");
         receiver_username=b.getString("receiver_username");
-        droneHandler=new DroneHandler(getApplicationContext());    //TODO : remove
+        distance=b.getDouble("distance");
+        ETA=b.getDouble("ETA");
+        user_latitude=b.getDouble("sender_latitude");
+        user_longitude=b.getDouble("sender_longitude");
 
         setContentView(R.layout.activity_create_form);  //display the layout
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
-        //listen for GPS
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            int TAG_CODE_PERMISSION_LOCATION=42;
-            ActivityCompat.requestPermissions(this, new String[] {
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION },
-                    TAG_CODE_PERMISSION_LOCATION);
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 50, this);  //updates nly if changes more than 50 meters, and no more than once every 10 seconds
-
-    }
-    //functions to receive GPS
-    @Override
-    public void onLocationChanged(Location location) {
-        user_latitude = location.getLatitude();
-        user_longitude = location.getLongitude();
     }
 
-    @Override
-    public void onProviderDisabled(String provider) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void onProviderEnabled(String provider) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
-
-    }
     public void formCancelButtonClicked(View view) {
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
@@ -144,8 +117,8 @@ public class CreateFormActivity extends AppCompatActivity implements LocationLis
             mutableData.child("drone_GPS").child("east").setValue(user_longitude);    //add user's GPS cordinate as drone_GPS
             mutableData.child("droneStatus").setValue(DroneHandler.IDLE);    //add user's GPS cordinate as drone_GPS
             mutableData.child("landing_allowed").setValue(false);
-            mutableData.child("ETA").setValue(0);   //TODO: set properly ETA
-            mutableData.child("distance").setValue(0.0);  //TODO : set properly distance
+            mutableData.child("ETA").setValue(ETA);
+            mutableData.child("distance").setValue(distance);
             mutableData.child("item").setValue(itemName);
             mutableData.child("quantity").setValue(itemQuantity);
             mutableData.child("message_to_receiver").setValue(message);
@@ -162,7 +135,8 @@ public class CreateFormActivity extends AppCompatActivity implements LocationLis
             Intent intent = new Intent(context,WaitingForAcceptationByReceiverActivity.class);
             intent.putExtra("username",sender_username);
             intent.putExtra("receiver_username",receiver_username);
-            intent.putExtra("droneHandler",droneHandler);
+            intent.putExtra("distance",distance);
+            intent.putExtra("ETA",ETA);
             startActivity(intent);
         }
     }
