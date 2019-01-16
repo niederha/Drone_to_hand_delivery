@@ -91,10 +91,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Bundle b = getIntent().getExtras();
         sender_username = b.getString("username");
         receiver_username = b.getString("receiver_username");
-        droneHandler = (DroneHandler) b.getSerializable("droneHandler");
-        //ARDiscoveryDeviceService service = (ARDiscoveryDeviceService) b.getParcelable("foo"); //TODO : uncomment and put correct key
-        ARDiscoveryDeviceService service = new ARDiscoveryDeviceService();  //TODO : remove
-        droneHandler = new DroneHandler(service,sender_username);
+        ARDiscoveryDeviceService mDroneService = (ARDiscoveryDeviceService) b.getParcelable("droneHandler");
+        ARDiscoveryDeviceService service = new ARDiscoveryDeviceService();
+        droneHandler = new DroneHandler(mDroneService,sender_username);
 
 
         //connect to firebase
