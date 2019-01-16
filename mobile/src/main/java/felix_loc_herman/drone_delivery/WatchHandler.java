@@ -47,6 +47,7 @@ public class WatchHandler implements GoogleApiClient.ConnectionCallbacks {
     }
 
     public static void disconnect(){
+        sendMessage(MESSAGE_PATH, "STOP");
         googleApiClient.disconnect();
     }
 

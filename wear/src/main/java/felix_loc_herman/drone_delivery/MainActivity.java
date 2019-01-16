@@ -2,15 +2,20 @@ package felix_loc_herman.drone_delivery;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.wearable.activity.WearableActivity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends WearableActivity implements MessageApi.MessageListener, GoogleApiClient.ConnectionCallbacks {
 
@@ -21,6 +26,11 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
     private GoogleApiClient googleApiClient;
 
     private ConstraintLayout constraintLayout;
+
+    private final static int INTERVAL = 1000 * 60; // 1 min
+    Handler timeHandler;
+
+    private boolean running = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +43,15 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
         setAmbientEnabled();
 
         initGoogleApiClient();
+
+        timeHandler = new Handler();
+        timeHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timeHandler.postDelayed(this, INTERVAL);
+                printTime();
+            }
+        }, 1);
     }
 
     @Override
@@ -40,11 +59,20 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (messageEvent.getPath().equalsIgnoreCase(WEAR_MESSAGE_PATH)){
-
-                    TextView etaTextView = findViewById(R.id.textPutETAhere);
+                if (messageEvent.getPath().equalsIgnoreCase(WEAR_MESSAGE_PATH)) {
+                    if (!running) {
+                          ((TextView) findViewById(R.id.textETA)).setVisibility(View.VISIBLE);
+                          ((TextView) findViewById(R.id.textPutETAhere)).setVisibility(View.VISIBLE);
+                          running = true;
+                    }
                     String etaValue = new String(messageEvent.getData());
-                    etaTextView.setText(etaValue);
+                    if (!etaValue.equals("STOP")) {
+                        TextView etaTextView = findViewById(R.id.textPutETAhere);
+                        etaTextView.setText(etaValue);
+                    } else {
+                        ((TextView) findViewById(R.id.textETA)).setVisibility(View.INVISIBLE);
+                        ((TextView) findViewById(R.id.textPutETAhere)).setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         });
@@ -65,13 +93,11 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
         Wearable.MessageApi.addListener(googleApiClient, this);
     }
 
-    // TODO: update clock time
-
     private void printTime ( ){
-        
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        ((TextView) findViewById(R.id.textPutTimeHere)).setText(sdf.format(c.getTime()));
     }
-
-
 
     //region Required stuff
 
@@ -103,6 +129,8 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
     protected void onDestroy() {
         if (googleApiClient != null)
             googleApiClient.unregisterConnectionCallbacks(this);
+        ((TextView) findViewById(R.id.textETA)).setVisibility(View.INVISIBLE);
+        ((TextView) findViewById(R.id.textPutETAhere)).setVisibility(View.INVISIBLE);
         super.onDestroy();
     }
 
