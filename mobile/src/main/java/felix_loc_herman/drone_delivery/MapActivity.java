@@ -251,6 +251,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 public void onClick(DialogInterface dialog, int which) {
                     Log.i("MapActivity","drone is allowed to land at sender's");
                     status=DRONE_LANDING_AT_SENDER;
+                    deliveryRef.child("status").setValue(DRONE_LANDING_AT_SENDER);  //TODO : check if it threadsafe and correct
                     applyStatusChange(DRONE_LANDING_AT_SENDER);
                 }
             });
