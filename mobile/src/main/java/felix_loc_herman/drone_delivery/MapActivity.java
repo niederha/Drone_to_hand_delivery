@@ -331,9 +331,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 else if(droneStatus==DroneHandler.LANDED && status==DRONE_LANDING_AT_SENDER)  //the drone just landed at sender
                 {
-                    status=DRONE_LANDED_AT_RECEIVER;
-                    deliveryRef.child("status").setValue(DRONE_LANDED_AT_RECEIVER);  //TODO : check if it threadsafe and correct
-                    applyStatusChange(DRONE_LANDED_AT_RECEIVER);
+                    status=DRONE_LANDED_AT_SENDER;
+                    deliveryRef.child("status").setValue(DRONE_LANDED_AT_SENDER);  //TODO : check if it threadsafe and correct
+                    applyStatusChange(DRONE_LANDED_AT_SENDER);
                 }
             }
 
