@@ -92,7 +92,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         sender_username = b.getString("username");
         receiver_username = b.getString("receiver_username");
         ARDiscoveryDeviceService mDroneService = (ARDiscoveryDeviceService) b.getParcelable("droneHandler");
-        ARDiscoveryDeviceService service = new ARDiscoveryDeviceService();
         droneHandler = new DroneHandler(mDroneService,sender_username);
 
 
