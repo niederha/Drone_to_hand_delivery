@@ -92,7 +92,11 @@ public class DroneHandler implements Serializable {
     }
 
     // Returns the ETA between two points
-    static public double computeETAmin(int startPosition, int endPosition){
+    static public double computeETAmin(double point_A_lat, double point_A_long, double point_B_lat, double point_B_long){
+        return 1;
+    }
+    // Returns the distance between two points
+    static public double distance(double point_A_lat, double point_A_long, double point_B_lat, double point_B_long){
         return 1;
     }
     //endregion
