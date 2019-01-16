@@ -1,5 +1,7 @@
 package felix_loc_herman.drone_delivery;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.parrot.arsdk.arcommands.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM;
 import com.parrot.arsdk.arcommands.ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKFILEPLAYINGSTATECHANGED_STATE_ENUM;
 import com.parrot.arsdk.arcommands.ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKPLAYERRORSTATECHANGED_ERROR_ENUM;
@@ -27,18 +29,24 @@ import android.util.Log;
 import static android.content.ContentValues.TAG;
 
 public class DroneHandler implements ARDeviceControllerListener {
+    /*public enum droneState{
+            IDLE, GOING_TOR_ECIVER, WATINTG_TO_LAND, LANDED_AT_RECIEVER, GOING_BACK
+        }*/
+    public static final int IDLE=0;
+    public static final int FLYING=1;
+    public static final int WAITING_TO_LAND=2;
+    public static final int LANDING=3;
+    public static final int LANDED=4;
+    public static final int NOT_CONNECTED=5;
+    private final DatabaseReference deliveryRef;
 
     private ARDeviceController mDroneController;
     private ARDiscoveryDeviceService mService;
     private ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKFILEPLAYINGSTATECHANGED_STATE_ENUM autoFlightState;
-    static private droneState state = droneState.NOT_CONNECTED;
+    static private int state = NOT_CONNECTED;
 
-    public enum droneState{
-        IDLE, FLYING, WAITING_TO_LAND, LANDED,NOT_CONNECTED
-    }
-
-    public DroneHandler(ARDiscoveryDeviceService service) {
-        state = droneState.NOT_CONNECTED;
+    public DroneHandler(ARDiscoveryDeviceService service, String sender_username) {
+        state = NOT_CONNECTED;
         mService = service;
         ARDiscoveryDevice device = createDiscoveryDevice();
         mDroneController = createController(device);
@@ -46,13 +54,37 @@ public class DroneHandler implements ARDeviceControllerListener {
             mDroneController.addListener(this);
             ARCONTROLLER_ERROR_ENUM error = mDroneController.start();
             mDroneController.getFeatureCommon().sendWifiSettingsOutdoorSetting((byte)1);
-            state = droneState.IDLE;
+            state = IDLE;
         }
         else{
             Log.e(TAG, "NO CONTROLLER");
         }
 
+        //connect to firebase
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference deliveryGetRef = database.getReference("deliveries");
+        deliveryRef = deliveryGetRef.child(sender_username);
     }
+
+    private void updateFirebase_ETA(double ETA)
+    {
+        deliveryRef.child("ETA").setValue(ETA);
+    }
+    private void updateFirebase_distance(double distance)
+    {
+        deliveryRef.child("distance").setValue(distance);
+    }
+    private void updateFirebase_DroneStatus(double droneStatus)
+    {
+        deliveryRef.child("droneStatus").setValue(droneStatus);
+    }
+    private void updateFirebase_DroneGPS(double latitude, double longitude)
+    {
+        deliveryRef.child("drone_GPS").child("north").setValue(latitude);
+        deliveryRef.child("drone_GPS").child("east").setValue(longitude);
+    }
+
 
     //region PublicFunctions
 
@@ -76,7 +108,7 @@ public class DroneHandler implements ARDeviceControllerListener {
                 ARSALPrint.e(TAG, "Error while sending take off: " + error);
             }
             else{
-                state = droneState.FLYING;
+                state = FLYING;
             }
         }
 
@@ -95,15 +127,15 @@ public class DroneHandler implements ARDeviceControllerListener {
                 ARSALPrint.e(TAG, "Error while sending take off: " + error);
             }
             else{
-                state = droneState.FLYING;
+                state = FLYING;
             }
 
         }
     }
 
-    static public droneState getDroneState(){
-        if (state == null){
-            return droneState.NOT_CONNECTED;
+    static public int getDroneState(){
+        if (state == NOT_CONNECTED){
+            return NOT_CONNECTED;
         }
         else{
             return state;
@@ -111,7 +143,7 @@ public class DroneHandler implements ARDeviceControllerListener {
     }
 
 
-    public void goTo(float latitude, float  longitude, Context mContext)
+    public void goTo(float latitude, float  longitude)
     {
 
     }
@@ -174,9 +206,19 @@ public class DroneHandler implements ARDeviceControllerListener {
     }
 
     // Returns the ETA between two points
-    static public double computeETAmin(int startPosition, int endPosition){
+    static public double computeETAmin(double point_A_lat, double point_A_long,double point_B_lat, double point_B_long){
         return 1;
     }
+
+    //return current distance
+    public double getDistance() {return  1;}
+
+    //return distance between 2 points
+    static public double distance(double point_A_lat, double point_A_long,double point_B_lat, double point_B_long){
+        return 1;
+    }
+
+
     //endregion
 
     private ARDeviceController createController(ARDiscoveryDevice device)
