@@ -41,6 +41,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String receiver_username;
     private DatabaseReference deliveryRef;
     private DatabaseReference receiverGPSRef;
+    private ValueEventListener myReceiverGPSEventListener;
     private double distance;
     private double ETA;
     private double drone_longitude;
@@ -97,7 +98,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         DatabaseReference userGetRef = database.getReference("receiver");
         receiverGPSRef = userGetRef.child(receiver_username).child("GPS");
-        receiverGPSRef.addValueEventListener(new MapActivity.ReceiverGPSUpdateEventListener(this));
+        myReceiverGPSEventListener = receiverGPSRef.addValueEventListener(new ReceiverGPSUpdateEventListener(this));
 
         //listen for GPS
 
@@ -226,6 +227,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         else if(status==DRONE_LANDED_AT_RECEIVER)
         {
+            receiverGPSRef.removeEventListener(myReceiverGPSEventListener);
+
+
             TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
             tv_state.setText("Drone landed at receiver");
 
