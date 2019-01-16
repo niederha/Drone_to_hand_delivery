@@ -78,7 +78,6 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
 
     private final String TAG = this.getClass().getSimpleName();
 
-
     private GoogleMap mMap;
 
     @Override
@@ -123,6 +122,9 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
                     TAG_CODE_PERMISSION_LOCATION);
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        WatchHandler.init(this);
+
     }
 
     @Override
@@ -325,6 +327,8 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
                 ETA=new_ETA;
                 TextView tv_ETA=(TextView) findViewById(R.id.activityReceiving_ETA_textView);
                 tv_ETA.setText(String.valueOf(ETA));
+
+                WatchHandler.sendMessage(WatchHandler.MESSAGE_PATH, String.valueOf(ETA) + " min");
             }
 
             if(new_distance!=distance)
@@ -352,6 +356,7 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
         Log.i("ReceivingActivity","OnDestroy : stopping listeners");
         if(deliveryRef!=null && valueEventListenerDelivery!=null)
             deliveryRef.removeEventListener(valueEventListenerDelivery);
+        WatchHandler.disconnect();
         super.onDestroy();
     }
 

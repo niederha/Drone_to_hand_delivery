@@ -2,7 +2,6 @@
 
 package felix_loc_herman.drone_delivery;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,15 +12,14 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
-import java.io.Serializable;
-
 public class WatchHandler implements GoogleApiClient.ConnectionCallbacks {
 
     private static final String START_ACTIVITY = "/start_activity";
+    public static final String MESSAGE_PATH = "/message";
 
     private static GoogleApiClient googleApiClient;
 
-     public static void init(Context context){
+    public static void init(Context context){
         googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
                 .build();
@@ -29,7 +27,7 @@ public class WatchHandler implements GoogleApiClient.ConnectionCallbacks {
         googleApiClient.connect();
     }
 
-    public void sendMessage(final String path, final String message){
+    public static void sendMessage(final String path, final String message){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -48,7 +46,7 @@ public class WatchHandler implements GoogleApiClient.ConnectionCallbacks {
         sendMessage (START_ACTIVITY, "" );
     }
 
-    public void disconnect(){
+    public static void disconnect(){
         googleApiClient.disconnect();
     }
 

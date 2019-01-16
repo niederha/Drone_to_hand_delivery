@@ -181,8 +181,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                             Manifest.permission.ACCESS_COARSE_LOCATION },
                     TAG_CODE_PERMISSION_LOCATION);
             // missing permissions to gps
-            //Toast.makeText(getContext(),"Failed to enable GPS!", Toast.LENGTH_SHORT).show();
-            //connectedSwitch.setChecked(false);
+            Toast.makeText(getContext(),"Failed to enable GPS!", Toast.LENGTH_SHORT).show();
+            connectedSwitch.setChecked(false);
 
         }
         MainActivity.receiver = new Receiver(MainActivity.userProfile.username,
@@ -194,6 +194,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
             //region unused function overrides
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.e(TAG, "GPS on status changed");
             }
 
             @Override

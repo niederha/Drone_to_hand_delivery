@@ -1,5 +1,6 @@
 package felix_loc_herman.drone_delivery;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -66,6 +67,12 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
 
     // TODO: update clock time
 
+    private void printTime ( ){
+        
+    }
+
+
+
     //region Required stuff
 
 
@@ -118,8 +125,16 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
     private void updateDisplay() {
         if (isAmbient()) {
             constraintLayout.setBackgroundColor(getResources().getColor(android.R.color.black, getTheme()));
+            ((TextView) findViewById(R.id.textTime)).setTextColor(Color.WHITE);
+            ((TextView) findViewById(R.id.textPutTimeHere)).setTextColor(Color.WHITE);
+            ((TextView) findViewById(R.id.textETA)).setTextColor(Color.WHITE);
+            ((TextView) findViewById(R.id.textPutETAhere)).setTextColor(Color.WHITE);
         } else {
             constraintLayout.setBackgroundColor(getResources().getColor(android.R.color.white, getTheme()));
+            ((TextView) findViewById(R.id.textTime)).setTextColor(Color.BLACK);
+            ((TextView) findViewById(R.id.textPutTimeHere)).setTextColor(Color.BLACK);
+            ((TextView) findViewById(R.id.textETA)).setTextColor(Color.BLACK);
+            ((TextView) findViewById(R.id.textPutETAhere)).setTextColor(Color.BLACK);
         }
     }
     //endregion
