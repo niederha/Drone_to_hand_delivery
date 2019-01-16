@@ -98,7 +98,7 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
             }
             else if(status==REQUEST_ACCEPTED_BY_RECEIVER) { //the receiver accepted the delivery
                 Toast.makeText(context,"The receiver accepted the delivery",Toast.LENGTH_LONG);
-                Intent intent = new Intent(context,TakeOffActivity.class);
+                Intent intent = new Intent(context,DroneConnectionActivity.class);
                 //TODO : add drone handler as extra
                 intent.putExtra("username",sender_username);
                 intent.putExtra("receiver_username",receiver_username);

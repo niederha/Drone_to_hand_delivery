@@ -33,6 +33,7 @@ public class DroneConnectionActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
 
+
     private ARDiscoveryService mArdiscoveryService;
     private ServiceConnection mArdiscoveryServiceConnection;
     private ARDiscoveryServicesDevicesListUpdatedReceiver mArdiscoveryServicesDevicesListUpdatedReceiver;
@@ -44,10 +45,22 @@ public class DroneConnectionActivity extends AppCompatActivity
     private WifiStateChangedReceiver mWifiStateReceiver;
     private ARDiscoveryDeviceService mSelectedDrone;
     private DroneHandler mDrone = null;
+    private String sender_username;
+    private String receiver_username;
+    private double distance;
+    private double ETA;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        Bundle b=getIntent().getExtras();
+        sender_username=b.getString("username");
+        receiver_username=b.getString("receiver_username");
+        distance=b.getDouble("distance");
+        ETA=b.getDouble("ETA");
+
         ARSDK.loadSDKLibs();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drone_connection);
@@ -69,9 +82,13 @@ public class DroneConnectionActivity extends AppCompatActivity
                     Log.e(TAG,"ERROR: never got the actual device");
                 }
                 // TODO: got the right activity
-                /*Intent mIntent = new Intent(MainActivity.this, PilotActivity.class);
+                Intent mIntent = new Intent(DroneConnectionActivity.this, TakeOffActivity.class);
                 mIntent.putExtra("DRONE",mSelectedDrone);
-                startActivity(mIntent);*/
+                mIntent.putExtra("username",sender_username);
+                mIntent.putExtra("receiver_username",receiver_username);
+                mIntent.putExtra("distance",distance);
+                mIntent.putExtra("ETA",ETA);
+                startActivity(mIntent);
             }
         });
     }

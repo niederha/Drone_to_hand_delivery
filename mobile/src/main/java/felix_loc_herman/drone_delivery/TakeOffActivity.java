@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.parrot.arsdk.ardiscovery.ARDiscoveryDeviceService;
 
 public class TakeOffActivity extends AppCompatActivity {
 
@@ -29,7 +30,7 @@ public class TakeOffActivity extends AppCompatActivity {
     private static final int DRONE_FLYING_TO_RECEIVER = 5;
     private double distance;
     private double ETA;
-
+    private ARDiscoveryDeviceService mDroneService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,9 @@ public class TakeOffActivity extends AppCompatActivity {
         receiver_username=b.getString("receiver_username");
         distance=b.getDouble("distance");
         ETA=b.getDouble("ETA");
+        mDroneService = (ARDiscoveryDeviceService) b.getParcelable("DRONE");
+
+
 
 
         //TODO : if the drone isn't set up yet, lauch the set up activity for return
@@ -85,6 +89,7 @@ public class TakeOffActivity extends AppCompatActivity {
         Intent intent = new Intent(this,MapActivity.class);
         intent.putExtra("username",sender_username);
         intent.putExtra("receiver_username",receiver_username);
+        intent.putExtra("DRONE",mDroneService);
         startActivity(intent);
     }
 
