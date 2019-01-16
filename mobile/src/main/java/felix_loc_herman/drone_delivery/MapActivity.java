@@ -273,6 +273,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             droneHandler.land();;
         }else if(status==DRONE_LANDED_AT_SENDER)
         {
+
+            if(deliveryRef!=null && valueEventListenerDelivery!=null)
+                deliveryRef.removeEventListener(valueEventListenerDelivery);
             //TODO : modify if we want a summary or a history of delivery(ies)
             deliveryRef.setValue(null); //delete the delivery structure
             Intent intent = new Intent(this,MainActivity.class);
