@@ -116,6 +116,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        droneHandler.takeOff();
     }
 
     @Override

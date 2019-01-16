@@ -143,7 +143,7 @@ public class DroneHandler implements ARDeviceControllerListener {
     }
 
 
-    public void goTo(float latitude, float  longitude)
+    public void goTo(double latitude, double  longitude)
     {
 
     }

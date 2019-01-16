@@ -135,6 +135,8 @@ public class CreateFormActivity extends AppCompatActivity {
             Intent intent = new Intent(context,WaitingForAcceptationByReceiverActivity.class);
             intent.putExtra("username",sender_username);
             intent.putExtra("receiver_username",receiver_username);
+            intent.putExtra("distance",distance);
+            intent.putExtra("ETA",ETA);
             startActivity(intent);
         }
     }
