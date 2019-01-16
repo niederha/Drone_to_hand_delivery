@@ -48,7 +48,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     private static final String DB_PROFILES = "profiles";
     private static final String DB_RECEIVER = "receiver";
     private static final String DB_TIMESTAMP = "timestamp";
-    private static final String DB_GPS = "gps";
+    private static final String DB_GPS = "GPS";
     private static final String DB_NORTH = "north";
     private static final String DB_EAST = "east";
     private static final String DB_GPSTIME = "gpstime";

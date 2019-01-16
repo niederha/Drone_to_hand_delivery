@@ -266,17 +266,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             TextView tv_state=(TextView) findViewById(R.id.activtyMap_state_textView);
             tv_state.setText("Drone is landing");
             droneHandler.land();;
-        }
-        else if(status==DRONE_LANDED_AT_SENDER)
+        }else if(status==DRONE_LANDED_AT_SENDER)
         {
             //TODO : modify if we want a summary or a history of delivery(ies)
             deliveryRef.setValue(null); //delete the delivery structure
-            Toast.makeText(this,"Delivery completed!",Toast.LENGTH_LONG).show();
-
             Intent intent = new Intent(this,MainActivity.class);
-            intent.putExtra("username",sender_username);
-            intent.putExtra("receiver_username",receiver_username);
-            intent.putExtra("droneHandler",droneHandler);
+            intent.putExtra(MainActivity.USERNAME,sender_username);
+            //intent.putExtra("receiver_username",receiver_username);
+            //intent.putExtra("droneHandler",droneHandler);
             startActivity(intent);
 
         }
