@@ -367,7 +367,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 // Finish account creation
 //
-                Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+                Intent intent = new Intent(EditProfileActivity.this, GPSActivity.class);
                 intent.putExtra(MainActivity.USER_PROFILE, userProfile);
                 startActivity(intent);
                 finish();

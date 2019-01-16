@@ -1,6 +1,7 @@
 package felix_loc_herman.drone_delivery;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,6 +29,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -88,13 +91,8 @@ public class MainSenderFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        Log.i("MainSenderFragment", "starting to try to get GPS");
-        inititializeGPSreception();
-        while(sender_lat==0 && sender_long==0)
-        {
-            //do nothing : just waiting for GPS to give some value
-        }
-        Log.i("MainSenderFragment", "got GPS : we can now display things");
+        sender_long=MainActivity.user_longitude;
+        sender_lat=MainActivity.user_latitude;
         fragmentView = inflater.inflate(R.layout.fragment_main_sender, container, false);
 
         // Setting the adapter
@@ -126,7 +124,7 @@ public class MainSenderFragment extends Fragment {
         return fragmentView;
     }
 
-    private void inititializeGPSreception()
+   /* private void inititializeGPSreception()
     {
 
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -145,7 +143,7 @@ public class MainSenderFragment extends Fragment {
         }
         //MainActivity.receiver = new Receiver(MainActivity.userProfile.username, MainActivity.userProfile.photoPath);
 
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+      /*  LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new LocationListener()
         {
             //region unused function overrides
@@ -172,8 +170,8 @@ public class MainSenderFragment extends Fragment {
         };
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);    //limit update to once every 5 seconds
         locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);  //TODO : send updates of GPS position (but then need to solve the bug of re-downloading pictures)
-
-    }
+*
+    }*/
 
     private void alertReceiverAndStartSending(final String receivername) {
 
