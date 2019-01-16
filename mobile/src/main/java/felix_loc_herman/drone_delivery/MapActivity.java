@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.parrot.arsdk.ardiscovery.ARDiscoveryDeviceService;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -91,6 +92,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         sender_username = b.getString("username");
         receiver_username = b.getString("receiver_username");
         droneHandler = (DroneHandler) b.getSerializable("droneHandler");
+        //ARDiscoveryDeviceService service = (ARDiscoveryDeviceService) b.getParcelable("foo"); //TODO : uncomment and put correct key
+        ARDiscoveryDeviceService service = new ARDiscoveryDeviceService();  //TODO : remove
+        droneHandler = new DroneHandler(service,sender_username);
 
 
         //connect to firebase

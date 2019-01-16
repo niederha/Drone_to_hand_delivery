@@ -22,11 +22,19 @@ public class MainActivity extends AppCompatActivity implements
     private MainReceiverFragment mainReceiverFragment;
     private MainSenderFragment mainSenderFragment;
 
+    public static double user_longitude;
+    public static double user_latitude;
+
     public enum LED_COLOR {OFF, YELLOW, RED, GREEN}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle b=getIntent().getExtras();
+        user_longitude=b.getDouble("user_longitude");
+        user_latitude=b.getDouble("user_latitude");
+
 
         receiver = new Receiver();
 

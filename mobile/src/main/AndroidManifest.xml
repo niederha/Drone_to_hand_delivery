@@ -51,8 +51,7 @@
         <activity
             android:name=".EditProfileActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation"
@@ -103,7 +102,11 @@
         <activity
             android:name=".DroneConnectionActivity"
             android:label="@string/title_activity_drone_connection"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:noHistory="true"/>
+        <activity
+            android:name=".GPSActivity"
+            android:noHistory="true"/>
     </application>
 
 </manifest>
