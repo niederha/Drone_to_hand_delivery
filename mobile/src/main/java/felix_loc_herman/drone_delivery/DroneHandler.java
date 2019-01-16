@@ -42,8 +42,8 @@ public class DroneHandler implements ARDeviceControllerListener {
     public static final int LANDING=3;
     public static final int LANDED=4;
     public static final int NOT_CONNECTED=5;
+    private static double droneSpeed = 0.5;
     private DatabaseReference deliveryRef;
-
     private final int critBatteryLevel = 5;
     private final float distTolerance = 2;
     private final float angleTolerance = 10;
@@ -58,7 +58,7 @@ public class DroneHandler implements ARDeviceControllerListener {
     private float yaw;
     private float pitch;
     private float roll;
-    private int forwardAngle = 10;
+    private int forwardAngle = 20;
     private boolean gotoPt = false;
 
     public DroneHandler(ARDiscoveryDeviceService service, String sender_username) {
@@ -105,7 +105,7 @@ public class DroneHandler implements ARDeviceControllerListener {
 
     public void takeOff()
     {
-        if (ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_LANDED.equals(getPilotingState()))
+        /*if (ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_LANDED.equals(getPilotingState()))
         {
             ARCONTROLLER_ERROR_ENUM error = mDroneController.getFeatureARDrone3().sendPilotingTakeOff();
 
@@ -117,14 +117,14 @@ public class DroneHandler implements ARDeviceControllerListener {
                 state = FLYING;
                 updateFirebaseDroneStatus(state);
             }
-        }
+        }*/
 
     }
 
     public void land()
     {
         // Reset drone Attitude
-        gotoPt = false;
+        /*gotoPt = false;
         mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) 0);
         mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) 0);
         mDroneController.getFeatureARDrone3().setPilotingPCMDFlag((byte)0);
@@ -146,13 +146,13 @@ public class DroneHandler implements ARDeviceControllerListener {
                 updateFirebaseDroneStatus(state);
             }
 
-        }
+        }*/
     }
 
 
     public void goTo(double goalLatitude, double  goalLongitude)
     {
-        gotoPt=true;
+        gotoPt=false; //true;
         this.goalLatitude=goalLatitude;
         this.goalLongitude=goalLongitude;
     }
@@ -192,13 +192,13 @@ public class DroneHandler implements ARDeviceControllerListener {
                     } else {
                         mDroneController.getFeatureARDrone3().setPilotingPCMDFlag((byte) 1);
                         if (abs(toDegrees(angleToPoint()) - toDegrees(yaw)) < angleTolerance) {
-                            Log.e(TAG, "FWD");
-                            mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) (forwardAngle / 180 * 100));
+                            mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) ((int)(round(forwardAngle/180.0*100.0))));
+                            mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) 0);
+                            mDroneController.getFeatureARDrone3().setPilotingPCMDGaz((byte) 0);
                         } else {
-                            int yawToReach = (int) (round(toDegrees(angleToPoint()) / 180) * 100.0);
-                            Log.e(TAG, "Angle: " + yawToReach);
+                            int yawToReach =  (int) (round(toDegrees(angleToPoint()))/180.0*100.0);
                             mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) 0);
-                            mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) yawToReach);
+                            mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) 50);
                         }
                     }
                 }
@@ -225,6 +225,9 @@ public class DroneHandler implements ARDeviceControllerListener {
                 roll = (float)((Double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_ATTITUDECHANGED_ROLL)).doubleValue();
                 pitch = (float)((Double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_ATTITUDECHANGED_PITCH)).doubleValue();
                 yaw = (float)((Double)args.get(ARFeatureARDrone3.ARCONTROLLER_DICTIONARY_KEY_ARDRONE3_PILOTINGSTATE_ATTITUDECHANGED_YAW)).doubleValue();
+                if (abs(toDegrees(angleToPoint())-toDegrees(yaw))<angleTolerance && state == FLYING && gotoPt){
+                    mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) 0);
+                }
             }
         }
     }
@@ -250,18 +253,20 @@ public class DroneHandler implements ARDeviceControllerListener {
 
     // Return the current ETA
     public double getETAmin(){
-        return 1;
+        return computeETAmin(latitude, longitude, goalLatitude, goalLongitude);
     }
 
     // Returns the ETA between two points
-    static public double computeETAmin(double point_A_lat, double point_A_long, double point_B_lat, double point_B_long){
-        return 1;
+    static public double computeETAmin(double pointALat, double pointALong, double pointBLat, double pointBLong){
+        double dist = distance(pointALat, pointBLong, pointBLat, pointBLong);
+        double ETA = dist/droneSpeed/60;
+        return ETA;
     }
 
 
     //return current distance
     public double getDistance() {
-        return distance(latitude,goalLatitude,longitude,goalLongitude);
+        return distance(latitude,longitude,goalLatitude,goalLongitude);
     }
 
     //return distance between 2 points
