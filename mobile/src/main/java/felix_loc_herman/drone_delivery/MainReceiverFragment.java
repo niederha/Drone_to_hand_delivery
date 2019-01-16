@@ -59,6 +59,11 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     final DatabaseReference peerGetRef = database.getReference(DB_RECEIVER);
     DatabaseReference peerRef;
     DatabaseReference deliveryRef;
+    private ValueEventListener valueEventListenerProfile=null;
+    private ValueEventListener valueEventListenerPeer=null;
+    private ValueEventListener deliveryListener=null;
+    private DatabaseReference referenceProfile;
+    private DatabaseReference referencePeer;
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -144,7 +149,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     private void getUserProfileFromDB() {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference(DB_PROFILES);
-        databaseReference.child(MainActivity.userProfile.username).addValueEventListener(new ValueEventListener() {
+        referenceProfile = databaseReference.child(MainActivity.userProfile.username);
+        valueEventListenerProfile = referenceProfile.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String db_username = dataSnapshot.child(DB_USERNAME).getValue(String.class);
@@ -245,7 +251,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     }
 
     private void startListener(){
-        peerRef.child(DB_SENDERNAME).addValueEventListener(new ValueEventListener() {
+        referencePeer=peerRef.child(DB_SENDERNAME);
+        valueEventListenerPeer = referencePeer.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!isOnline) {
@@ -260,11 +267,11 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                         //deliveryRef.child("status").setValue(2);    //2 : REQUEST_RECEIVED_BY_RECEIVER
 
                         //read delivery information and create dialog to accept or decline delivery
-                        ValueEventListener deliveryListener = new ValueEventListener() {
+                        deliveryListener = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                               // if(dataSnapshot.child("item").exists() && dataSnapshot.child("item").exists()) {
-                                if(dataSnapshot.getValue()!=null) {
+                                // if(dataSnapshot.child("item").exists() && dataSnapshot.child("item").exists()) {
+                                if (dataSnapshot.getValue() != null) {
                                     String item = dataSnapshot.child("item").getValue(String.class);
                                     double quantity = dataSnapshot.child("quantity").getValue(Double.class).doubleValue();
                                     String description = dataSnapshot.child("message_to_receiver").getValue(String.class);
@@ -297,10 +304,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                                         }
                                     });
                                     alertDialog.show();
-                                }
-                                else
-                                {
-                                    Log.i("MainReceiverFragment","not ready yet");
+                                } else {
+                                    Log.i("MainReceiverFragment", "not ready yet");
                                 }
                             }
 
@@ -312,9 +317,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
                             }
                         };
                         deliveryRef.addValueEventListener(deliveryListener);
-                       // deliveryRef.addListenerForSingleValueEvent(deliveryListener);
-
-
+                        // deliveryRef.addListenerForSingleValueEvent(deliveryListener);
 
 
                         //sendername is the name of the sendername
@@ -379,6 +382,19 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        Log.i("MainReceivingFragment","OnDestroy : stoping listeners");
+        if(referenceProfile!=null && valueEventListenerProfile!=null)
+            referenceProfile.removeEventListener(valueEventListenerProfile);
+        if(referencePeer!=null && valueEventListenerPeer!=null)
+            referencePeer.removeEventListener(valueEventListenerPeer);
+        if(deliveryRef!=null && deliveryListener!=null)
+            deliveryRef.removeEventListener(deliveryListener);
+        super.onDestroy();
     }
 //endregion
 }
