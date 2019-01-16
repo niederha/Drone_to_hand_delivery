@@ -272,12 +272,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             droneHandler.land();;
         }else if(status==DRONE_LANDED_AT_SENDER)
         {
+
+            if(deliveryRef!=null && valueEventListenerDelivery!=null)
+                deliveryRef.removeEventListener(valueEventListenerDelivery);
             //TODO : modify if we want a summary or a history of delivery(ies)
             deliveryRef.setValue(null); //delete the delivery structure
-            Intent intent = new Intent(this,MainActivity.class);
+            Intent intent = new Intent(this,GPSActivity.class);
             intent.putExtra(MainActivity.USERNAME,sender_username);
-            //intent.putExtra("receiver_username",receiver_username);
-            //intent.putExtra("droneHandler",droneHandler);
             startActivity(intent);
 
         }

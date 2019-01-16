@@ -42,7 +42,7 @@ public class DroneHandler implements ARDeviceControllerListener {
     public static final int LANDING=3;
     public static final int LANDED=4;
     public static final int NOT_CONNECTED=5;
-    private final DatabaseReference deliveryRef;
+    private DatabaseReference deliveryRef;
 
     private final int critBatteryLevel = 5;
     private final float distTolerance = 2;
@@ -62,6 +62,9 @@ public class DroneHandler implements ARDeviceControllerListener {
     private boolean gotoPt = false;
 
     public DroneHandler(ARDiscoveryDeviceService service, String sender_username) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference deliveryGetRef = database.getReference("deliveries");
+        deliveryRef = deliveryGetRef.child(sender_username);
         state = NOT_CONNECTED;
         updateFirebaseDroneStatus(state);
         mService = service;

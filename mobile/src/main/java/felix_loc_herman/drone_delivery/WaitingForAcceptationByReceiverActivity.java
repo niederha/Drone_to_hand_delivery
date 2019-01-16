@@ -71,7 +71,8 @@ public class WaitingForAcceptationByReceiverActivity extends AppCompatActivity {
             deliveryRef.child("cancelled").setValue(true);  //inform the receiver that we cancelled the delivery  //TODO : check if it threadsafe and correct
             Toast.makeText(this,"The delivery request has been cancelled successfully",Toast.LENGTH_SHORT);
         }
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this,GPSActivity.class);
+        intent.putExtra(MainActivity.USERNAME, sender_username);
         startActivity(intent);
     }
 
