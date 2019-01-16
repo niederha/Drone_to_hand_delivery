@@ -36,4 +36,9 @@
     <string name="that_is_you">That\'s you!</string>
 
     <string name="title_activity_map">Map</string>
+    <string name="title_activity_drone_connection">DroneConnectionActivity</string>
+    <string name="enable">Enable</string>
+    <string name="wifi_disabled">Wifi is disabled</string>
+    <string name="no_nearby_device">No nearby device</string>
+
 </resources>
