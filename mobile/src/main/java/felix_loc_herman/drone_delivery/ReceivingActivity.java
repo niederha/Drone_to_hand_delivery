@@ -307,7 +307,6 @@ public class ReceivingActivity extends AppCompatActivity implements OnMapReadyCa
                 Toast.makeText(context,"The sender cancelled the delivery : the drone is now flying back to sender",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ReceivingActivity.this, MainActivity.class);
                 intent.putExtra("username",receiver_username);
-                intent.putExtra("sender_username",sender_username);
                 startActivity(intent);
                 //TODO : clean delivery structure from database?
             }
