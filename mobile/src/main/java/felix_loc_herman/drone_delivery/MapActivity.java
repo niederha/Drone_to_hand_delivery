@@ -271,6 +271,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         {
             //TODO : modify if we want a summary or a history of delivery(ies)
             deliveryRef.setValue(null); //delete the delivery structure
+            Toast.makeText(this,"Delivery completed!",Toast.LENGTH_LONG).show();
+
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("username",sender_username);
             intent.putExtra("receiver_username",receiver_username);

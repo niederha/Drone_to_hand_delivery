@@ -358,7 +358,7 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     public void onPause() {
         super.onPause();
 
-        disconnectPeer();
+        //disconnectPeer();
     }
 
     @Override
@@ -375,8 +375,8 @@ public class MainReceiverFragment extends Fragment implements CompoundButton.OnC
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-        disconnectPeer();
+        //mListener = null;
+        //disconnectPeer();
     }
 
     public interface OnFragmentInteractionListener {
