@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class CreateFormActivity extends AppCompatActivity implements LocationLis
         droneHandler=new DroneHandler(getApplicationContext());    //TODO : remove
 
         setContentView(R.layout.activity_create_form);  //display the layout
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
         //listen for GPS

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ public class TakeOffActivity extends AppCompatActivity {
             //TODO : planify return?
         }*/
         setContentView(R.layout.activity_take_off);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
         TextView tv_dist=(TextView) findViewById(R.id.activityTakeOff_distance);

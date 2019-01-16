@@ -3,6 +3,7 @@ package felix_loc_herman.drone_delivery;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 public class TodoActivity extends AppCompatActivity {
@@ -11,6 +12,7 @@ public class TodoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Intent received_intent=getIntent();
         Bundle b=received_intent.getExtras();
