@@ -3,8 +3,6 @@ package felix_loc_herman.drone_delivery;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.parrot.arsdk.arcommands.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM;
-import com.parrot.arsdk.arcommands.ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKFILEPLAYINGSTATECHANGED_STATE_ENUM;
-import com.parrot.arsdk.arcommands.ARCOMMANDS_COMMON_MAVLINKSTATE_MAVLINKPLAYERRORSTATECHANGED_ERROR_ENUM;
 import com.parrot.arsdk.arcontroller.ARCONTROLLER_DEVICE_STATE_ENUM;
 import com.parrot.arsdk.arcontroller.ARCONTROLLER_DICTIONARY_KEY_ENUM;
 import com.parrot.arsdk.arcontroller.ARCONTROLLER_ERROR_ENUM;
@@ -21,12 +19,10 @@ import com.parrot.arsdk.ardiscovery.ARDiscoveryDeviceNetService;
 import com.parrot.arsdk.ardiscovery.ARDiscoveryDeviceService;
 import com.parrot.arsdk.ardiscovery.ARDiscoveryException;
 import com.parrot.arsdk.arsal.ARSALPrint;
-
-import android.content.Context;
 import android.util.Log;
 
-
 import static android.content.ContentValues.TAG;
+
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.round;
@@ -88,6 +84,7 @@ public class DroneHandler implements ARDeviceControllerListener {
     }
     private void updateFirebaseDistance(double distance)
     {
+        updateFirebaseETA(getETAmin());
         deliveryRef.child("distance").setValue(distance);
     }
     private void updateFirebaseDroneStatus(int droneStatus)
@@ -105,7 +102,7 @@ public class DroneHandler implements ARDeviceControllerListener {
 
     public void takeOff()
     {
-        /*if (ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_LANDED.equals(getPilotingState()))
+        if (ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_ENUM.ARCOMMANDS_ARDRONE3_PILOTINGSTATE_FLYINGSTATECHANGED_STATE_LANDED.equals(getPilotingState()))
         {
             ARCONTROLLER_ERROR_ENUM error = mDroneController.getFeatureARDrone3().sendPilotingTakeOff();
 
@@ -117,14 +114,14 @@ public class DroneHandler implements ARDeviceControllerListener {
                 state = FLYING;
                 updateFirebaseDroneStatus(state);
             }
-        }*/
+        }
 
     }
 
     public void land()
     {
         // Reset drone Attitude
-        /*gotoPt = false;
+        gotoPt = false;
         mDroneController.getFeatureARDrone3().setPilotingPCMDPitch((byte) 0);
         mDroneController.getFeatureARDrone3().setPilotingPCMDYaw((byte) 0);
         mDroneController.getFeatureARDrone3().setPilotingPCMDFlag((byte)0);
@@ -146,13 +143,13 @@ public class DroneHandler implements ARDeviceControllerListener {
                 updateFirebaseDroneStatus(state);
             }
 
-        }*/
+        }
     }
 
 
     public void goTo(double goalLatitude, double  goalLongitude)
     {
-        gotoPt=false; //true;
+        gotoPt=true;
         this.goalLatitude=goalLatitude;
         this.goalLongitude=goalLongitude;
     }

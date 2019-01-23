@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.support:wearable-2.4.0">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/wearable-2.4.0.aar/b446cb5f4f86941ec6ab517ee5786d7c/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/wearable-2.4.0.aar/b446cb5f4f86941ec6ab517ee5786d7c/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/wearable-2.4.0.aar/2da9e87055f3c438139fa264f3a9432f/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/wearable-2.4.0.aar/2da9e87055f3c438139fa264f3a9432f/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
